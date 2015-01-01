@@ -10,21 +10,16 @@ class ini
     {
 
         //var $e
-        try
+
+        $f = stream_resolve_include_path($file);
+        if($f)
         {
-            $f = stream_resolve_include_path($file);
-            if(file_exists($f) && is_readable($f))
-            {
-                return parse_ini_file($f, TRUE);
-            }
-            else
-            {
-                throw new \limepie\config\Exception($file . " 파일이 없습니다.");
-            }
+            return parse_ini_file($f, TRUE);
         }
-        catch (\Exception $e)
+        else
         {
-            throw new \limepie\config\Exception($e);
+            $caller = debug_backtrace()[0];
+            trigger_error("file does not exists: ". $file ." in ".$caller['file'].' on line '.$caller['line'].' and defined ', E_USER_ERROR);
         }
 
     }

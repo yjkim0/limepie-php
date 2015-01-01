@@ -9,25 +9,22 @@ class php
     {
 
         //var $e, $config;
-        try
+
+        $f = stream_resolve_include_path($file);
+        if($f)
         {
-            $f = stream_resolve_include_path($file);
-            if(file_exists($f) && is_readable($f))
+            $config = require $f;
+            if($config)
             {
-                $config = require $f;
                 \limepie\config::set($config);
             }
-            else
-            {
-                throw new \limepie\config\Exception($file.' file not found');
-            }
         }
-        catch (\Exception $e)
+        else
         {
-            throw new \limepie\config\Exception($e);
+            $caller = debug_backtrace()[0];
+            trigger_error("file does not exists: ". $file ." in ".$caller['file'].' on line '.$caller['line'].' and defined ', E_USER_ERROR);
         }
 
     }
-
 
 }
