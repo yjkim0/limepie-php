@@ -143,7 +143,7 @@ class framework
 
             $arrActionName = [$requestMethod.$actionName, $actionName];
             foreach($arrActionName as $action) {
-                if( TRUE === method_exists($instance, $action) && TRUE === is_callable([$instance, $action]) )
+                if(TRUE === method_exists($instance, $action) && TRUE === is_callable([$instance, $action]) )
                 {
                     return call_user_func_array([$instance, $action], $arguments);
                 }
@@ -190,7 +190,7 @@ class framework
     {
 
         $arguments;
-        if(isset($config["arguments"]))
+        if(TRUE === isset($config["arguments"]))
         {
             $arguments = $config["arguments"];
         }
