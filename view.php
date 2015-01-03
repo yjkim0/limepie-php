@@ -42,8 +42,8 @@ class view
 
         // default
         $tpl = new view\php;
-        $tpl->define(space::name("__define__")->getAttributes());
-        $tpl->assign(space::name("__assign__")->getAttributes());
+        $tpl->define(self::getDefine());
+        $tpl->assign(self::getAssign());
 
         if($define)
         {
