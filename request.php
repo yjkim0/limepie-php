@@ -145,7 +145,7 @@ class request
 
     }
 
-    public static function has($key)
+    public static function defined($key)
     {
 
         if(!self::$data)
