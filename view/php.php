@@ -9,7 +9,9 @@ class php
     public $tpl_; // = [];
     public $var_; // = [];
     public $skin;
-    public $tpl_path;
+    public $tplPath;
+    public $relativePath= [];
+
 
     public function __construct()
     {
@@ -19,38 +21,38 @@ class php
 
     }
 
-    public function assign($arg, $path = FALSE)
+    public function assign($key, $value = FALSE)
     {
 
-        if (TRUE === is_array($arg))
+        if (TRUE === is_array($key))
         {
-            $this->var_ = array_merge($this->var_, $arg);
+            $this->var_ = array_merge($this->var_, $key);
         }
         else
         {
-            $this->var_[$arg] = $path;
+            $this->var_[$key] = $value;
         }
 
     }
 
-    public function define($arg, $path = FALSE)
+    public function define($fid, $path = FALSE)
     {
 
-        if ($path)
+        if(TRUE === is_array($fid))
         {
-            $this->_define($arg, $path);
-        }
-        else
-        {
-            foreach ($arg as $fid => $path2)
+            foreach ($fid as $subFid => $subPath)
             {
-                $this->_define($fid, $path2);
+                $this->_define($subFid, $subPath);
             }
         }
+        else
+        {
+            $this->_define($fid, $path);
+        }
 
     }
 
-    public function _define($fid, $path)
+    private function _define($fid, $path)
     {
 
         $this->tpl_[$fid] = $path;
@@ -66,12 +68,12 @@ class php
         }
         else
         {
-            return $this->fetched($fid);
+            return $this->fetch($fid);
         }
 
     }
 
-    public function fetched($fid)
+    public function fetch($fid)
     {
 
         ob_start();
@@ -86,43 +88,40 @@ class php
     public function render($fid)
     {
 
-        $tpl_path       = $this->tpl_path($fid);
-
-        if (FALSE === is_file($tpl_path))
+        // define 되어있으나 값이 없을때
+        if(TRUE === isset($this->tpl_[$fid]) && !$this->tpl_[$fid])
         {
-            throw new \limepie\view\exception("템플릿 파일이 없음 : " . $tpl_path);
+            return;
         }
 
-        $this->_include_tpl($tpl_path, $fid); //, scope);
+        $this->requireFile($this->tplPath($fid));
+
+        return;
 
     }
 
-    public function _include_tpl($cpl, $tpl)
-    {//, TPL_SCP)
-
-        extract($this->var_);
-        require $cpl;
-
-    }
-
-    public function tpl_path($fid)
+    private function requireFile($tplPath)
     {
 
-        $path = "";
+        extract($this->var_);
+        require $tplPath;
 
-        if (TRUE == isset($this->tpl_[$fid]))
+    }
+
+    public function tplPath($fid)
+    {
+
+        $path = $addFolder = "";
+
+        if (TRUE === isset($this->tpl_[$fid]))
         {
             $path = $this->tpl_[$fid];
         }
         else
         {
-            throw new peanut\exception($fid . "이(가) 정의되어있지 않음");
+            throw new exception($fid . "이(가) 정의되어있지 않음");
         }
-        if (substr($path, 0, 1) == "/")
-        {
-            return $path;
-        }
-        else
+        if (FALSE === isset($this->relativePath[$fid]))
         {
             $skinFolder = trim($this->skin, "/");
 
@@ -130,32 +129,19 @@ class php
             {
                 $addFolder = $skinFolder . "/";
             }
-            else
-            {
-                $addFolder = "";
-            }
-            $front          = \limepie\framework::getInstance();
-            $router         = $front->getRouter();
 
-            $module         = $router->getParameter("module");
-            $controller     = $router->getParameter("controller");
-            $action         = $router->getParameter("action");
-            $basedir        = $router->getParameter("basedir");
-            $prefix         = $router->getParameter("prefix");
-
-            $path = strtr($path, [
-                "<basedir>"         => $basedir
-                , "<prefix>"        => $prefix
-                , "<module>"        => $module
-                , "<controller>"    => $controller
-                , "<action>"        => $action
-            ]);
-
-            $this->tpl_[$fid] = stream_resolve_include_path($addFolder . $path);
-            return $this->tpl_[$fid];
-
+            $this->relativePath[$fid] = $addFolder.$path;
+            $tplPath = stream_resolve_include_path($addFolder.$path);
         }
-
+        else
+        {
+            $tplPath = $path;
+        }
+        if (FALSE === is_file($tplPath))
+        {
+            throw new exception($fid . " 템플릿 파일이 없음 : " . $path);
+        }
+        return $this->tpl_[$fid] = $tplPath;
     }
 
 }

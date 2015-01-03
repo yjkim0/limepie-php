@@ -5,20 +5,38 @@ namespace limepie;
 class view
 {
 
-    public static function fetch()
+    public static function fetch($define = [], $assign = [])
     {
 
-        return self::show(TRUE);
+        return self::excute(FALSE, $define, $assign);
 
     }
 
-    public static function show($display = FALSE)
+    public static function show($define = [], $assign = [])
     {
 
-        $definition = config::import('template');
-        if (gettype($definition) == "object" && ($definition instanceof \Closure))
+        self::excute(TRUE, $define, $assign);
+
+    }
+
+    private static function excute($display = TRUE, $define = [], $assign = [])
+    {
+        if($define)
         {
-            return $definition($display);
+            self::define($define);
+        }
+        if($assign)
+        {
+            self::assign($assign);
+        }
+
+        if(config::defined('template'))
+        {
+            $definition = config::import('template');
+            if (gettype($definition) == "object" && ($definition instanceof \Closure))
+            {
+                return $definition($display);
+            }
         }
 
         // default
@@ -26,6 +44,14 @@ class view
         $tpl->define(space::name("__define__")->getAttributes());
         $tpl->assign(space::name("__assign__")->getAttributes());
 
+        if($define)
+        {
+            $tpl->define($define);
+        }
+        if($assign)
+        {
+            $tpl->assign($assign);
+        }
         return $tpl->show("layout", $display);
 
     }
