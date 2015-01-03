@@ -56,7 +56,6 @@ class i18n
         }
         if(TRUE===$n)
         {
-
             if(self::$errorLevel & self::NOTICE_VAR)
             {
                 $caller = debug_backtrace()[1];
