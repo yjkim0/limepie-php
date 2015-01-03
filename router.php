@@ -44,6 +44,9 @@ class router
             if($tmp)
             {
                 $this->segments = explode("/", $tmp);
+                // set request segment
+                request::$data["segment"] = $this->segments;
+
             }
         }
 
@@ -300,8 +303,8 @@ class router
         }
 
         $this->parameters = [];
-        $this->arguments = [];
-        $m1 = NULL;
+        $this->arguments  = [];
+        $m1               = NULL;
         foreach ($this->routes as $rule => $defaultVar)
         {
             if (preg_match("#^" . $rule . "#", $this->pathinfo, $m1))
@@ -353,6 +356,9 @@ class router
                 break;
             }
         }
+
+        // set request parameter
+        request::$data["parameter"] = $this->parameters;
 
     }
 

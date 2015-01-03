@@ -9,23 +9,12 @@ class request
     public static function initialize(\Closure $callback=NULL)
     {
 
-        if(!\limepie\framework::getInstance()->getRouter())
-        {
-
-            $caller = debug_backtrace()[0];
-            throw new \Exception("router를 세팅하신후 실행해주세요, called in ".$caller['file'].' on line '.$caller['line']);
-
-        }
-
         self::$data = [
             "get"       => $_GET,
             "post"      => $_POST,
             "cookie"    => isset($_COOKIE)   ? $_COOKIE  : [],
             "session"   => isset($_SESSION)  ? $_SESSION : [],
             "server"    => isset($_SERVER)   ? $_SERVER  : [],
-            "parameter" => \limepie\framework::getInstance()->getRouter()->getParameters(),
-            "argument"  => \limepie\framework::getInstance()->getRouter()->getArguments(),
-            "segment"   => \limepie\framework::getInstance()->getRouter()->getSegments()
         ];
         if($callback)
         {
