@@ -21,6 +21,7 @@ class view
 
     private static function excute($display = TRUE, $define = [], $assign = [])
     {
+
         if($define)
         {
             self::define($define);
