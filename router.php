@@ -44,9 +44,9 @@ class router
             if($tmp)
             {
                 $this->segments = explode("/", $tmp);
-                // set request segment
-                request::$data["segment"] = $this->segments;
 
+                // set request segment
+                request::addData("segment", $this->segments);
             }
         }
 
@@ -358,7 +358,7 @@ class router
         }
 
         // set request parameter
-        request::$data["parameter"] = $this->parameters;
+        request::addData("parameter", $this->parameters);
 
     }
 
