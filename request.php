@@ -4,22 +4,28 @@ namespace limepie;
 class request
 {
 
-    public static $data;
+    private static $data;
 
     public static function initialize(\Closure $callback=NULL)
     {
 
-        self::$data = [
-            "get"       => $_GET,
-            "post"      => $_POST,
-            "cookie"    => isset($_COOKIE)   ? $_COOKIE  : [],
-            "session"   => isset($_SESSION)  ? $_SESSION : [],
-            "server"    => isset($_SERVER)   ? $_SERVER  : [],
-        ];
+        self::addData('get',     isset($_GET)     ? $_GET     : []);
+        self::addData('post',    isset($_POST)    ? $_POST    : []);
+        self::addData('cookie',  isset($_COOKIE)  ? $_COOKIE  : []);
+        self::addData('session', isset($_SESSION) ? $_SESSION : []);
+        self::addData('server',  isset($_SERVER)  ? $_SERVER  : []);
+
         if($callback)
         {
             return $callback();
         }
+
+    }
+
+    public static function addData($key, $value)
+    {
+
+        self::$data[$key] = $value;
 
     }
 
@@ -71,10 +77,6 @@ class request
         if(TRUE === isset(self::$data[$input]))
         {
             return self::$data[$input];
-        }
-        else if(!self::$data)
-        {
-            throw new \Exception('\limepie\request::initialize() 가 실행되지 않았습니다.');
         }
         else
         {
@@ -164,7 +166,7 @@ class request
     public static function isPost()
     {
 
-        return self::unsafest('REQUEST_METHOD', function($val) {
+        return request\server::unsafest('REQUEST_METHOD', function($val) {
             return strtolower($val) == 'post';
         });
 
@@ -173,7 +175,7 @@ class request
     public static function isGet()
     {
 
-        return self::unsafest('REQUEST_METHOD', function($val) {
+        return request\server::unsafest('REQUEST_METHOD', function($val) {
             return strtolower($val) == 'get';
         });
 
@@ -189,7 +191,7 @@ class request
     public static function isAjax()
     {
 
-        return self::unsafest('HTTP_X_REQUESTED_WITH', function($val) {
+        return request\server::unsafest('HTTP_X_REQUESTED_WITH', function($val) {
             return strtolower($val) == 'xmlhttprequest';
         });
 
