@@ -16,13 +16,13 @@ class response
     {
 
         $callback = request\get::unsafest('callback', function($val = '') {
-            if($val == '')
+            if($val)
             {
-                return request\post::unsafest('callback', function($val = '') {
-                    return $val;
-                });
+                return $val;
             }
-            return $val;
+            return request\post::unsafest('callback', function($val = '') {
+                return $val;
+            });
         });
 
         return $callback
