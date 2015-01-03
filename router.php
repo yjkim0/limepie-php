@@ -294,7 +294,7 @@ class router
 
         // var $def, $i, $parameters, $defaultVar, $rule, $key, $value, $m1, $_path, $c;
 
-        if (!$this->routes || !is_array($this->routes) || !count($this->routes))
+        if (!$this->routes || FALSE === is_array($this->routes) || !count($this->routes))
         {
             $this->routes["(?P<module>[^/]+)?"."(?:/(?P<controller>[^/]+))?"."(?:/(?P<action>[^/]+))?"."(?:/(?P<parameters>.*))?"] = [];
         }
@@ -328,7 +328,7 @@ class router
                     {
                         if (TRUE === isset($_path[$i])
                             && $_path[$i]
-                            && FALSE == in_array($_path[$i], $this->systemVariables))
+                            && FALSE === in_array($_path[$i], $this->systemVariables))
                         {
                             if (TRUE === isset($_path[$i +1]))
                             {
