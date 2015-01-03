@@ -22,6 +22,7 @@ class response
                     return $val;
                 });
             }
+            return $val;
         });
 
         return $callback
