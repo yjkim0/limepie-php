@@ -119,7 +119,7 @@ class php
         }
         else
         {
-            throw new exception($fid . "이(가) 정의되어있지 않음");
+            trigger_error('template id "'.$fid.'" is not defined', E_USER_ERROR);
         }
         if (FALSE === isset($this->relativePath[$fid]))
         {
@@ -139,7 +139,7 @@ class php
         }
         if (FALSE === is_file($tplPath))
         {
-            throw new exception($fid . " 템플릿 파일이 없음 : " . $path);
+            trigger_error('cannot find defined template "'.$path.'"', E_USER_ERROR);
         }
         return $this->tpl_[$fid] = $tplPath;
     }
