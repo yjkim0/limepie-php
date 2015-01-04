@@ -4,7 +4,7 @@ namespace limepie;
 class request
 {
 
-    private static $data;
+    public static $data;
 
     public static function initialize(\Closure $callback=NULL)
     {
@@ -66,10 +66,6 @@ class request
     public static function unsafeAll()
     {
 
-        if(!self::$data)
-        {
-            throw new \Exception('\limepie\request::initialize() 가 실행되지 않았습니다.');
-        }
         //var $input, $tmp;
         $tmp   = explode("\\", get_called_class());
         $input = end($tmp);
@@ -88,10 +84,7 @@ class request
 
     public static function getRaw($key, $isNotice = TRUE)
     {
-        if(!self::$data)
-        {
-            throw new \Exception('\limepie\request::initialize() 가 실행되지 않았습니다.');
-        }
+
         //var $input, $tmp;
         $tmp   = explode("\\", get_called_class());
         $input = end($tmp);
@@ -139,10 +132,6 @@ class request
     public static function defined($key)
     {
 
-        if(!self::$data)
-        {
-            throw new \Exception('\limepie\request::initialize() 가 실행되지 않았습니다.');
-        }
         //var $input, $tmp, $value;
         $tmp   = explode("\\", get_called_class());
         $input = end($tmp);

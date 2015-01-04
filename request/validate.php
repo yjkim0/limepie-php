@@ -8,22 +8,17 @@ class validate
     private static function getRaw($key)
     {
 
-        if(!request::$data)
-        {
-            throw new \Exception('\limepie\request::initialize() 가 실행되지 않았습니다.');
-        }
         //var $input, $tmp, $value;
         $tmp   = explode("\\", get_called_class());
         $input = end($tmp);
 
-        if(FALSE === isset(request::$data[$input][$key]))
+        if(TRUE === isset(request::$data[$input][$key]))
         {
             return request::$data[$input][$key];
         }
         else
         {
             $caller = debug_backtrace()[1];
-
             trigger_error("Undefined variable: ".$caller["args"][0]." in ".$caller['file'].' on line '.$caller['line'].' and defined ', E_USER_NOTICE);
         }
 

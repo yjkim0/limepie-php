@@ -8,10 +8,6 @@ class sanitize
     private static function getRaw($key)
     {
 
-        if(!request::$data)
-        {
-            throw new \Exception('\limepie\request::initialize() 가 실행되지 않았습니다.');
-        }
         //var $input, $tmp;
         $tmp   = explode("\\", get_called_class());
         $input = end($tmp);
