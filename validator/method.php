@@ -1,60 +1,62 @@
 <?php
 
-\limepie\Validator::addMethod('required', function(\limepie\Validator\Context $context, $value, $param) {
+use \limepie\validator;
 
-    $required = $context->resolve($value, $param);
-    return $required ? !$context->optional($value) : TRUE;
+validator::addMethod('required', function(\limepie\validator $validator, $value, $param) {
+
+    $required = $param && $value ? TRUE : FALSE;
+    return $required ? !$validator->optional($value) : TRUE;
 
 });
 
-\limepie\Validator::addMethod('minlength', function(\limepie\Validator\Context $context, $value, $param) {
+validator::addMethod('minlength', function(\limepie\validator $validator, $value, $param) {
 
     $length = is_array($value) ? count($value) : strlen($value);
-    return $context->optional($value) || $length >= $param;
+    return $validator->optional($value) || $length >= $param;
 
 });
 
-\limepie\Validator::addMethod('maxlength', function(\limepie\Validator\Context $context, $value, $param) {
+validator::addMethod('maxlength', function(\limepie\validator $validator, $value, $param) {
 
     $length = is_array($value) ? count($value) : strlen($value);
-    return $context->optional($value) || $length <= $param;
+    return $validator->optional($value) || $length <= $param;
 
 });
 
-\limepie\Validator::addMethod('rangelength', function(\limepie\Validator\Context $context, $value, $param) {
+validator::addMethod('rangelength', function(\limepie\validator $validator, $value, $param) {
 
     $length = is_array($value) ? count($value) : strlen($value);
-    return $context->optional($value) || $length >= $param[0] && $length <= $param[1];
+    return $validator->optional($value) || $length >= $param[0] && $length <= $param[1];
 
 });
 
-\limepie\Validator::addMethod('min', function(\limepie\Validator\Context $context, $value, $param) {
+validator::addMethod('min', function(\limepie\validator $validator, $value, $param) {
 
-    return $context->optional($value) || $value >= $param;
-
-});
-
-\limepie\Validator::addMethod('max', function(\limepie\Validator\Context $context, $value, $param) {
-
-    return $context->optional($value) || $value <= $param;
+    return $validator->optional($value) || $value >= $param;
 
 });
 
-\limepie\Validator::addMethod('range', function(\limepie\Validator\Context $context, $value, $param) {
+validator::addMethod('max', function(\limepie\validator $validator, $value, $param) {
 
-    return $context->optional($value) || $value >= $param[0] && $value <= $param[1];
-
-});
-
-\limepie\Validator::addMethod('email', function(\limepie\Validator\Context $context, $value) {
-
-    return $context->optional($value) || filter_var($value, FILTER_VALIDATE_EMAIL) !== FALSE;
+    return $validator->optional($value) || $value <= $param;
 
 });
 
-\limepie\Validator::addMethod('url', function(\limepie\Validator\Context $context, $value) {
+validator::addMethod('range', function(\limepie\validator $validator, $value, $param) {
 
-    if ($context->optional($value))
+    return $validator->optional($value) || $value >= $param[0] && $value <= $param[1];
+
+});
+
+validator::addMethod('email', function(\limepie\validator $validator, $value) {
+
+    return $validator->optional($value) || filter_var($value, FILTER_VALIDATE_EMAIL) !== FALSE;
+
+});
+
+validator::addMethod('url', function(\limepie\validator $validator, $value) {
+
+    if ($validator->optional($value))
     {
         return TRUE;
     }
@@ -68,33 +70,33 @@
 
 });
 
-\limepie\Validator::addMethod('date', function(\limepie\Validator\Context $context, $value) {
+validator::addMethod('date', function(\limepie\validator $validator, $value) {
 
-    return $context->optional($value) || strtotime($value) !== FALSE;
-
-});
-
-\limepie\Validator::addMethod('dateISO', function(\limepie\Validator\Context $context, $value) {
-
-    return $context->optional($value) || preg_match('/^\d{4}[\/\-]\d{1,2}[\/\-]\d{1,2}$/', $value);
+    return $validator->optional($value) || strtotime($value) !== FALSE;
 
 });
 
-\limepie\Validator::addMethod('number', function(\limepie\Validator\Context $context, $value) {
+validator::addMethod('dateISO', function(\limepie\validator $validator, $value) {
 
-    return $context->optional($value) || is_numeric($value);
-
-});
-
-\limepie\Validator::addMethod('digits', function(\limepie\Validator\Context $context, $value) {
-
-    return $context->optional($value) || preg_match('/^\d+$/', $value);
+    return $validator->optional($value) || preg_match('/^\d{4}[\/\-]\d{1,2}[\/\-]\d{1,2}$/', $value);
 
 });
 
-\limepie\Validator::addMethod('creditcard', function(\limepie\Validator\Context $context, $value) {
+validator::addMethod('number', function(\limepie\validator $validator, $value) {
 
-    if ($context->optional($value))
+    return $validator->optional($value) || is_numeric($value);
+
+});
+
+validator::addMethod('digits', function(\limepie\validator $validator, $value) {
+
+    return $validator->optional($value) || preg_match('/^\d+$/', $value);
+
+});
+
+validator::addMethod('creditcard', function(\limepie\validator $validator, $value) {
+
+    if ($validator->optional($value))
     {
         return TRUE;
     }
@@ -125,21 +127,21 @@
 
 });
 
-\limepie\Validator::addMethod('equalTo', function(\limepie\Validator\Context $context, $value, $param) {
+validator::addMethod('equalTo', function(\limepie\validator $validator, $value, $param) {
 
-    if ($context->optional($value))
+    if ($validator->optional($value))
     {
         return TRUE;
     }
 
     $valid = FALSE;
-    $parts = $context->parseSelector($param);
+    $parts = validator::parseSelector($param);
 
     if ($parts !== NULL)
     {
         $name = $parts['name'];
 
-        $model = $context->getValidator()->getModel();
+        $model = $validator->getData();
         $valid = $value === (isset($model[$name]) ? $model[$name] : NULL);
     }
 
@@ -147,9 +149,9 @@
 
 });
 
-\limepie\Validator::addMethod('password', function(\limepie\Validator\Context $context, $value, $param) {
+validator::addMethod('password', function(\limepie\validator $validator, $value, $param) {
 
-    return $context->optional($value) || preg_match("#^(?=^.{6,12}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[".preg_quote("!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,",'#')."])(?!.*\s).*$#", $value);
+    return $validator->optional($value) || preg_match("#^(?=^.{6,12}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[".preg_quote("!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,",'#')."])(?!.*\s).*$#", $value);
 
 });
 
