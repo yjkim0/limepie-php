@@ -10,9 +10,9 @@ class i18n
     public static $errorLevel = 7;
     public static $trace      = 0;
 
-    const NOTICE_VAR    = 1;
-    const NOTICE_LOCALE = 2;
-    const NOTICE_DIR    = 4;
+    const NOTICE_VAR          = 1;
+    const NOTICE_LOCALE       = 2;
+    const NOTICE_DIR          = 4;
 
     public static function _($var, $args=[])
     {
