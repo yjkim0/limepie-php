@@ -76,12 +76,6 @@ validator::addMethod('date', function(\limepie\validator $validator, $value) {
 
 });
 
-validator::addMethod('dateISO', function(\limepie\validator $validator, $value) {
-
-    return $validator->optional($value) || preg_match('/^\d{4}[\/\-]\d{1,2}[\/\-]\d{1,2}$/', $value);
-
-});
-
 validator::addMethod('number', function(\limepie\validator $validator, $value) {
 
     return $validator->optional($value) || is_numeric($value);
@@ -91,39 +85,6 @@ validator::addMethod('number', function(\limepie\validator $validator, $value) {
 validator::addMethod('digits', function(\limepie\validator $validator, $value) {
 
     return $validator->optional($value) || preg_match('/^\d+$/', $value);
-
-});
-
-validator::addMethod('creditcard', function(\limepie\validator $validator, $value) {
-
-    if ($validator->optional($value))
-    {
-        return TRUE;
-    }
-
-    if (preg_match('/[^0-9 \-]+/', $value))
-    {
-        return FALSE;
-    }
-
-    $value = preg_replace('/\/D/', '', $value);
-    $check = 0;
-    $even = FALSE;
-
-    for ($n = strlen($value) - 1; $n >= 0; $n--)
-    {
-        $digit = intval($value[$n]);
-
-        if ($even && ($digit *= 2) > 9)
-        {
-            $digit -= 9;
-        }
-
-        $check += $digit;
-        $even = !$even;
-    }
-
-    return ($check % 10) === 0;
 
 });
 
