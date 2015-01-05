@@ -4,10 +4,10 @@ use \limepie\validator;
 
 validator::addMethod('required', function(\limepie\validator $validator, $value, $param) {
 
-    $required = $param && $value ? TRUE : FALSE;
+    $required = $param ? TRUE : FALSE;
     return $required ? !$validator->optional($value) : TRUE;
 
-});
+}, '필수 항목입니다. 입력해주세요.');
 
 validator::addMethod('minlength', function(\limepie\validator $validator, $value, $param) {
 
@@ -96,19 +96,15 @@ validator::addMethod('equalTo', function(\limepie\validator $validator, $value, 
     }
 
     $valid = FALSE;
-    $parts = validator::parseSelector($param);
-
-    if ($parts !== NULL)
+    if ($param !== NULL)
     {
-        $name = $parts['name'];
-
         $model = $validator->getData();
-        $valid = $value === (isset($model[$name]) ? $model[$name] : NULL);
+        $valid = $value === (isset($model[$param]) ? $model[$param] : NULL);
     }
 
     return $valid;
 
-});
+}, '{0}와 일치하지 않음.');
 
 validator::addMethod('password', function(\limepie\validator $validator, $value, $param) {
 
