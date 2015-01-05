@@ -8,6 +8,7 @@ class validator
     private $data;
     private $rules;
     private $messages;
+    private static $defaultMessages;
     private static $methods = "";//[];
     private $errors;
 
@@ -22,9 +23,10 @@ class validator
 
     }
 
-    public static function addMethod($methodName, $method)
+    public static function addMethod($methodName, $method, $message='')
     {
 
+        self::$defaultMessages[$methodName] = $message;
         self::$methods[$methodName] = $method;
 
     }
@@ -128,12 +130,20 @@ class validator
                 if (TRUE === isset($this->messages[$name])
                     && TRUE === isset($this->messages[$name][$methodName]))
                 {
+                    $message = $this->messages[$name][$methodName];
+                } else if(TRUE === isset(self::$defaultMessages[$methodName]))
+                {
+                    $message = self::$defaultMessages[$methodName];
+                }
+
+                if($message)
+                {
                     $p = $param;
                     if (FALSE === is_array($param))
                     {
                         $p = [$param];
                     }
-                    $message = [preg_replace("/\\{([0-9]+)\\}/", "%s", $this->messages[$name][$methodName])];
+                    $message = [preg_replace("/\\{([0-9]+)\\}/", "%s", $message)];
                     $message = call_user_func_array("sprintf", array_merge($message , $p));
                 }
                 $this->addError($name, $methodName, $param, $message);
