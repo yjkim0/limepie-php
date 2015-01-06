@@ -83,7 +83,7 @@ class framework
         $basedir         = $this->getRouter()->getParameter("basedir");
         $prefix          = $this->getRouter()->getParameter("prefix");
 
-        $namespaceName = $this->getRouter()->getControllerNamespace();
+        $namespaceName   = $this->getRouter()->getControllerNamespace();
         foreach($this->getRouter()->getParameters()as $key => $parameter)
         {
             $namespaceName = str_replace(['<'.$key.'>','/'], [$parameter,'\\'], $namespaceName);
@@ -92,7 +92,7 @@ class framework
         $className       = $controller.$this->getRouter()->getControllerSuffix();
         $actionName      = $action.$this->getRouter()->getActionSuffix();
 
-        $baseFolderName = $this->getRouter()->getControllerDir();
+        $baseFolderName  = $this->getRouter()->getControllerDir();
         foreach($this->getRouter()->getParameters()as $key => $parameter)
         {
             $baseFolderName = str_replace('<'.$key.'>', $parameter, $baseFolderName);
