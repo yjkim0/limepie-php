@@ -83,23 +83,20 @@ class framework
         $basedir         = $this->getRouter()->getParameter("basedir");
         $prefix          = $this->getRouter()->getParameter("prefix");
 
-        $namespaceName   = strtr($this->getRouter()->getControllerNamespace(), [
-            "<basedir>"         => str_replace("/","\\", $basedir)
-            , "<prefix>"        => $prefix
-            , "<module>"        => $module
-            , "<controller>"    => $controller
-            , "<action>"        => $action
-        ]);
+        $namespaceName = $this->getRouter()->getControllerNamespace();
+        foreach($this->getRouter()->getParameters()as $key => $parameter)
+        {
+            $namespaceName = str_replace(['<'.$key.'>','/'], [$parameter,'\\'], $namespaceName);
+        }
 
         $className       = $controller.$this->getRouter()->getControllerSuffix();
         $actionName      = $action.$this->getRouter()->getActionSuffix();
-        $baseFolderName  = strtr($this->getRouter()->getControllerDir(), [
-            "<basedir>"         => $basedir
-            , "<prefix>"        => $prefix
-            , "<module>"        => $module
-            , "<controller>"    => $controller
-            , "<action>"        => $action
-        ]);
+
+        $baseFolderName = $this->getRouter()->getControllerDir();
+        foreach($this->getRouter()->getParameters()as $key => $parameter)
+        {
+            $baseFolderName = str_replace('<'.$key.'>', $parameter, $baseFolderName);
+        }
 
         $fileName        = $baseFolderName."/".$className.".php";
         $folderName      = dirname($fileName);
