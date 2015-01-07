@@ -357,6 +357,16 @@ class router
             }
         }
 
+        foreach($this->parameters as $key => &$parameter)
+        {
+            if(strpos($parameter,'<') !== FALSE) {
+                foreach($this->parameters as $key2 => $parameter2)
+                {
+                    $parameter = str_replace('<'.$key2.'>', $parameter2, $parameter);
+                }
+            }
+        }
+
         // set request parameter
         request::addData("parameter", $this->parameters);
 
