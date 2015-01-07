@@ -173,11 +173,12 @@ class framework
         $framework  = self::getInstance();
         $framework->setRouter($this->getRouter());
         $newRouter  = $framework->getRouter();
+
         // $newRouter->setError($errorMessage, $errorCode, $errorData);
 
         if($this->getPrevRouter()->getMatchRoute() == $newRouter->getMatchRoute())
         {
-            throw new \limepie\router\exception(("error 404route."), "error 404route", $arguments);
+            throw new \limepie\router\exception(("error 404route."), "error 404route", $errorData);
         }
         return $framework->dispatch([$errorMessage, $errorCode, $errorData]);
 
