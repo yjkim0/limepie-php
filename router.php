@@ -17,7 +17,7 @@ class router
     private $arguments           = [];
     private $parameters          = [];
 
-    private $basedir             = "";
+    private $basedir             = "app/module";
     private $prefix              = "";
     private $module              = "main";
     private $controller          = "index";
@@ -28,7 +28,7 @@ class router
     private $controllerNamespace = "<basedir>\<module>";
     private $actionSuffix        = "Action";
     private $controllerSuffix    = "Controller";
-    private $notFound;
+    private $notFound            = ['(.*)' => ["module" => "main", "controller" => "error", "action" => "index"]];
     private $errorInfo           = [];
 
     public function __construct($routes)
