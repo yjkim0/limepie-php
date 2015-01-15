@@ -46,11 +46,11 @@ class js
 
         if(FALSE === empty($strMsg))
         {
-            alert($strMsg);
+            self::alert($strMsg);
         }
         if(FALSE === empty($strUrl))
         {
-            jsmove($strUrl);
+            self::jsmove($strUrl);
             exit();
         }
 

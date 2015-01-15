@@ -112,3 +112,21 @@ validator::addMethod('password', function(\limepie\validator $validator, $value,
 
 });
 
+validator::addMethod('birthday', function(\limepie\validator $validator, $value) {
+
+    return preg_match('/^\d\d\d\d\d\d\d\d$/', $value) && strtotime($value) !== FALSE && $value < date('Ymd');
+
+});
+
+validator::addMethod('joinage', function(\limepie\validator $validator, $value, $param) {
+
+    return date("Y") - (int)substr($value) >= (int)$param - 1;
+
+});
+
+validator::addMethod('mobile', function(\limepie\validator $validator, $value, $param) {
+
+    return $validator->optional($value) || preg_match('/(01[0,1,6,7,9])(-?)(\d{3,4})\2(\d{4})/', $value);
+
+});
+
