@@ -116,4 +116,26 @@ class config
 
     }
 
+    public static function environment($domains, $func)
+    {
+
+        $match = FALSE;
+        foreach($domains as $environment => $domain)
+        {
+            // HTTP_HOST와 매칭되는 도메인을 찾는다.
+            if(TRUE === in_array(getenv('HTTP_HOST'), $domain))
+            {
+                \limepie\config::set('ENVIRONMENT', $environment);
+                // environment별 환경설정 파일 인클루드
+                $func($environment);
+                $match = TRUE;
+                break;
+            }
+        }
+        if(FALSE === $match)
+        {
+            throw new \limepie\config\exception("domain Configuration file does not exists");
+        }
+
+    }
 }
