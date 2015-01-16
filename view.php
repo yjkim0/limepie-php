@@ -8,18 +8,18 @@ class view
     public static function fetch($define = [], $assign = [])
     {
 
-        return self::excute(FALSE, $define, $assign);
+        return self::execute(FALSE, $define, $assign);
 
     }
 
     public static function show($define = [], $assign = [])
     {
 
-        self::excute(TRUE, $define, $assign);
+        self::execute(TRUE, $define, $assign);
 
     }
 
-    private static function excute($display = TRUE, $define = [], $assign = [])
+    private static function execute($display = TRUE, $define = [], $assign = [])
     {
 
         if($define)
