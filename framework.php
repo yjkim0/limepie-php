@@ -184,23 +184,7 @@ class framework
 
     }
 
-    public function forward($config)
-    {
-
-        $arguments;
-        if(TRUE === isset($config["arguments"]))
-        {
-            $arguments = $config["arguments"];
-        }
-        else
-        {
-            $arguments = [];
-        }
-        return $this->_forward($config["route"], $arguments);
-
-    }
-
-    private function _forward($routes = [], $arguments = [])
+    public function forward($routes = [], $arguments = [])
     {
 
         //var $framework, $newRouter;
@@ -222,7 +206,14 @@ class framework
     public function dispatch($arguments = [])
     {
 
-        return $this->run($arguments);
+        $definition = $this->run($arguments);
+
+        if (gettype ($definition) == "object" && ($definition instanceof \Closure))
+        {
+            return $definition($this);
+        }
+        return $definition;
 
     }
+
 }
