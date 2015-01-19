@@ -99,7 +99,7 @@ validator::addMethod('equalTo', function(\limepie\validator $validator, $value, 
     if ($param !== NULL)
     {
         $model = $validator->getData();
-        $valid = $value === (isset($model[$param]) ? $model[$param] : NULL);
+        $valid = $value === (isset($model[preg_replace('/^#/','',$param)]) ? $model[preg_replace('/^#/','',$param)] : NULL);
     }
 
     return $valid;
@@ -120,7 +120,7 @@ validator::addMethod('birthday', function(\limepie\validator $validator, $value)
 
 validator::addMethod('joinage', function(\limepie\validator $validator, $value, $param) {
 
-    return date("Y") - (int)substr($value) >= (int)$param - 1;
+    return date("Y") - (int)substr($value,0,4) >= (int)$param - 1;
 
 });
 
