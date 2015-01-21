@@ -3,6 +3,14 @@
 namespace limepie;
 
 /*
+
+$totalCount     = 1232;
+$recordsPerPage = 50;
+$pagesPerBlock  = 9;
+$currentPage    = sanitize\segment::int(2,1);;
+$urlPattern     = '/service/list/(:page)';
+
+
 // html
 $pagingHtml  = paginator::getHtml($totalCount, $currentPage, $recordsPerPage, $pagesPerBlock, $urlPattern);
 
