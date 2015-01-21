@@ -37,18 +37,10 @@ class router
         $this->routes = $routes;
         $this->setPathinfo();
 
-        if(TRUE === isset($_SERVER["PATH_INFO"]))
-        {
-            //var tmp;
-            $tmp = trim($_SERVER["PATH_INFO"], "/");
-            if($tmp)
-            {
-                $this->segments = explode("/", $tmp);
+        $this->segments = explode("/", $this->pathinfo);
 
-                // set request segment
-                request::addData("segment", $this->segments);
-            }
-        }
+        // set request segment
+        request::addData("segment", $this->segments);
 
     }
 
@@ -206,23 +198,16 @@ class router
 
     }
 
-    public function setPathinfo($pathinfo = NULL, $isForce = FALSE)
+    public function setPathinfo()
     {
 
-        if ($pathinfo || $isForce)
+        if (TRUE === isset($_SERVER["PATH_INFO"]))
         {
-            $this->pathinfo  = $pathinfo;
+            $this->pathinfo  = trim($_SERVER["PATH_INFO"], "/");
         }
         else
         {
-            if (TRUE === isset($_SERVER["PATH_INFO"]))
-            {
-                $this->pathinfo  = trim($_SERVER["PATH_INFO"], "/");
-            }
-            else
-            {
-                $this->pathinfo  = "";
-            }
+            $this->pathinfo  = "";
         }
 
     }

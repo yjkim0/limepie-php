@@ -9,6 +9,7 @@ class Database extends \Pdo
     {
 
         $connect = \limepie\config::get("db-server", $name);
+
         if (TRUE === isset($connect["dsn"])
             && TRUE === isset($connect["username"])
             && TRUE === isset($connect["password"]))
