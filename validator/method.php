@@ -48,12 +48,6 @@ validator::addMethod('range', function(\limepie\validator $validator, $value, $p
 
 });
 
-validator::addMethod('email', function(\limepie\validator $validator, $value) {
-
-    return $validator->optional($value) || filter_var($value, FILTER_VALIDATE_EMAIL) !== FALSE;
-
-});
-
 validator::addMethod('url', function(\limepie\validator $validator, $value) {
 
     if ($validator->optional($value))
@@ -109,6 +103,12 @@ validator::addMethod('equalTo', function(\limepie\validator $validator, $value, 
 validator::addMethod('password', function(\limepie\validator $validator, $value, $param) {
 
     return $validator->optional($value) || preg_match("#^(?=^.{6,12}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[".preg_quote("!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,",'#')."])(?!.*\s).*$#", $value);
+
+});
+
+validator::addMethod('email', function(\limepie\validator $validator, $value) {
+
+    return $validator->optional($value) || filter_var($value, FILTER_VALIDATE_EMAIL) !== FALSE;
 
 });
 
