@@ -69,16 +69,17 @@ view::define([
 class paginator
 {
 
-    private $totalCount;
-    private $totalPages;
-    private $recordsPerPage;
-    private $currentPage;
+    private $totalCount       = 0;
+    private $totalPages       = 0;
+    private $currentPage      = 0;
+    private $recordsPerPage   = 10;
+    private $pagesPerBlock    = 9;
+    private $viewStartEnd     = FALSE;
     private $urlPattern;
-    private $pagesPerBlock  = 9;
-    private $viewStartEnd = FALSE;
 
-    public function __construct($totalCount, $currentPage, $recordsPerPage, $pagesPerBlock=9, $urlPattern = '', $viewStartEnd = FALSE)
+    public function __construct($totalCount, $currentPage, $recordsPerPage=10, $pagesPerBlock=9, $urlPattern = '', $viewStartEnd = FALSE)
     {
+
         $this->totalCount     = $totalCount;
         $this->recordsPerPage = $recordsPerPage;
         $this->currentPage    = $currentPage;
@@ -89,48 +90,61 @@ class paginator
         $this->totalPages     = ($this->recordsPerPage == 0 ? 0 : (int) ceil($this->totalCount/$this->recordsPerPage));
         $this->nextPage       = $this->currentPage < $this->totalPages ? $this->currentPage + 1 : NULL;
         $this->prevPage       = $this->currentPage > 1 ? $this->currentPage - 1 : NULL;
+
     }
 
-    public static function getHtml($totalCount, $currentPage, $recordsPerPage, $pagesPerBlock=9, $urlPattern = '', $viewStartEnd = FALSE)
+    public static function getHtml($totalCount, $currentPage, $recordsPerPage=10, $pagesPerBlock=9, $urlPattern = '', $viewStartEnd = FALSE)
     {
+
         $paginator = new paginator($totalCount, $currentPage, $recordsPerPage, $pagesPerBlock=9, $urlPattern, $viewStartEnd);
         return $paginator->toHtml();
+
     }
-    public static function get($totalCount, $currentPage, $recordsPerPage, $pagesPerBlock=9, $urlPattern = '', $viewStartEnd = FALSE)
+
+    public static function get($totalCount, $currentPage, $recordsPerPage=10, $pagesPerBlock=9, $urlPattern = '', $viewStartEnd = FALSE)
     {
+
         $paginator = new paginator($totalCount, $currentPage, $recordsPerPage, $pagesPerBlock=9, $urlPattern, $viewStartEnd);
         return $paginator->toArray();
+
     }
 
     private function getPageUrl($pageNum=NULL)
     {
+
         if(!$pageNum)
         {
             return NULL;
         }
         return str_replace('(:page)', $pageNum, $this->urlPattern);
+
     }
 
     private function createPage($pageNum, $isCurrent = FALSE)
     {
+
         return [
             'num'       => $pageNum,
             'url'       => $this->getPageUrl($pageNum),
             'isCurrent' => $isCurrent,
         ];
+
     }
 
     private function createEllipsisPage()
     {
+
         return [
             'num'       => '...',
             'url'       => NULL,
             'isCurrent' => FALSE,
         ];
+
     }
 
     public function getPages()
     {
+
         $pages = [];
 
         if ($this->totalPages <= $this->pagesPerBlock)
@@ -187,10 +201,12 @@ class paginator
         }
 
         return $pages;
+
     }
 
     public function toArray()
     {
+
         return [
             'totalPages'  => $this->totalPages,
             'currentPage' => $this->currentPage,
@@ -198,6 +214,7 @@ class paginator
             'pages'       => $this->getPages(),
             'nextUrl'     => $this->getPageUrl($this->nextPage),
         ];
+
     }
 
     public function toHtml()
@@ -234,6 +251,7 @@ class paginator
             $html .= '<li class="disabled"><a>&raquo;</a></li>';
         }
         $html .= '</ul>';
+
         return $html;
 
     }
