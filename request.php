@@ -22,133 +22,35 @@ class request
 
     }
 
-    public static function addData($key, $value)
-    {
-
-        self::$data[$key] = $value;
-
-    }
-
-    public static function isEmpty($val)
-    {
-
+    // '', false는 true, 나머지 false
+    public static function isEmpty($val) {
         if(
-            TRUE === is_bool($val)
-            || TRUE === is_array($val)
+            //TRUE === is_bool($val)
+            TRUE === $val
+            || TRUE === is_array($val) && TRUE === isset($val[0])
             || TRUE === is_object($val)
-            || 0 < strlen($val)
             || FALSE === empty($val)
-            || FALSE === is_null($val)
+            || TRUE === is_null($val)
+            || TRUE === is_numeric($val)
+            || TRUE === is_string($val) && 0 < strlen($val)
         )
         {
             return FALSE;
         }
         return TRUE;
+    }
+
+    public static function addData($dataName, $data)
+    {
+
+        self::$data[$dataName] = $data;
 
     }
 
-    public static function unsafest($key, \closure $definition)
+    public static function getData($dataName, $key)
     {
 
-        $value = self::getRaw($key, FALSE);
-        return self::getValue($value, $definition);
-
-    }
-
-    public static function unsafe($key, $definition = NULL)
-    {
-
-        $value = self::getRaw($key);
-        return self::getValue($value, $definition);
-
-    }
-
-    public static function unsafeAll()
-    {
-
-        //var $input, $tmp;
-        $tmp   = explode("\\", get_called_class());
-        $input = end($tmp);
-
-        if(TRUE === isset(self::$data[$input]))
-        {
-            return self::$data[$input];
-        }
-        else
-        {
-            $caller = debug_backtrace()[0];
-            trigger_error("Undefined type: parameter, argument, segment, get, post, cookie in ".$caller['file'].' on line '.$caller['line'].' and defined ', E_USER_NOTICE);
-        }
-
-    }
-
-    public static function getRaw($key, $isNotice = TRUE)
-    {
-
-        //var $input, $tmp;
-        $tmp   = explode("\\", get_called_class());
-        $input = end($tmp);
-
-        if(TRUE === isset(self::$data[$input][$key]))
-        {
-            return self::$data[$input][$key];
-        }
-        else
-        {
-            if(FALSE === $isNotice)
-            {
-                return NULL;
-            }
-            else
-            {
-                $caller = debug_backtrace()[1];
-                trigger_error("Undefined variable: ".$caller["args"][0]." in ".$caller['file'].' on line '.$caller['line'].' and defined ', E_USER_NOTICE);
-            }
-        }
-
-    }
-
-    public static function getValue($value=NULL, $definition=NULL)
-    {
-
-        // var $ret = NULL:
-        if (gettype ($definition) == "object" && ($definition instanceof \Closure))
-        {
-            $ret = $definition($value);
-        }
-        elseif (FALSE === self::isEmpty($value))
-        {
-            $ret = $value;
-        }
-        else
-        {
-            $ret = $definition;
-        }
-
-        return $ret;
-
-    }
-
-    public static function defined($key)
-    {
-
-        //var $input, $tmp, $value;
-        $tmp   = explode("\\", get_called_class());
-        $input = end($tmp);
-
-        if(FALSE === isset(request::$data[$input]))
-        {
-            $caller = debug_backtrace()[0];
-            trigger_error("Undefined type: parameter, argument, segment, get, post, cookie in ".$caller['file'].' on line '.$caller['line'].' and defined ', E_USER_NOTICE);
-        }
-        else if(TRUE === isset(request::$data[$input][$key]))
-        {
-            return TRUE;
-        }
-        else
-        {
-            return FALSE;
-        }
+        return TRUE === isset(self::$data[$dataName][$key]) ? self::$data[$dataName][$key] : NULL;
 
     }
 

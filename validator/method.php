@@ -90,10 +90,9 @@ validator::addMethod('equalTo', function(\limepie\validator $validator, $value, 
     }
 
     $valid = FALSE;
-    if ($param !== NULL)
+    if ($param)
     {
-        $model = $validator->getData();
-        $valid = $value === (isset($model[preg_replace('/^#/','',$param)]) ? $model[preg_replace('/^#/','',$param)] : NULL);
+        $valid = ($value === $validator->getData($param));
     }
 
     return $valid;
