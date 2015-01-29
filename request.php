@@ -57,18 +57,14 @@ class request
     public static function isPost()
     {
 
-        return request\server::unsafest('REQUEST_METHOD', function($val) {
-            return strtolower($val) == 'post';
-        });
+        return strtolower(request\sanitize::server('REQUEST_METHOD', 'string')) == 'post';
 
     }
 
     public static function isGet()
     {
 
-        return request\server::unsafest('REQUEST_METHOD', function($val) {
-            return strtolower($val) == 'get';
-        });
+        return strtolower(request\sanitize::server('REQUEST_METHOD', 'string')) == 'get';
 
     }
 
@@ -82,9 +78,7 @@ class request
     public static function isAjax()
     {
 
-        return request\server::unsafest('HTTP_X_REQUESTED_WITH', function($val) {
-            return strtolower($val) == 'xmlhttprequest';
-        });
+        return strtolower(request\sanitize::server('HTTP_X_REQUESTED_WITH', 'string')) == 'xmlhttprequest';
 
     }
 

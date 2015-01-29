@@ -119,7 +119,7 @@ validator::addMethod('birthday', function(\limepie\validator $validator, $value)
 
 validator::addMethod('joinage', function(\limepie\validator $validator, $value, $param) {
 
-    return date("Y") - (int)substr($value) >= (int)$param - 1;
+    return date("Y") - (int)substr($value,0,4) >= (int)$param - 1;
 
 });
 
