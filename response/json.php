@@ -24,9 +24,8 @@ class json extends response
         ]);
     }
 
-    public static function validator($msg, $data=array())
+    public static function validator($data=array())
     {
-        $data['message'] = $msg;
         return parent::json([
             'status' => 'validator',
             'result' => $data
