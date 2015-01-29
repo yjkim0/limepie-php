@@ -31,4 +31,17 @@ class response
 
     }
 
+    public static function jsredirect($strUrl, $strMsg='')
+    {
+        if(FALSE === empty($strMsg))
+        {
+            echo '<script type="text/javascript">alert("'.$strMsg.'");</script>';
+        }
+        if(FALSE === empty($strUrl))
+        {
+            echo '<script type="text/javascript">window.location.href="'.$strUrl.'";</script>';
+            exit();
+        }
+    }
+
 }
