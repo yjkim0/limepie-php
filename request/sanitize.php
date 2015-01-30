@@ -186,7 +186,7 @@ class sanitize// extends validate
     public static function raw($val)
     {
 
-        return $val;
+        return TRUE !== is_null($val) ? $val : FALSE;
 
     }
 
