@@ -129,3 +129,8 @@ validator::addMethod('mobile', function(\limepie\validator $validator, $value, $
 
 });
 
+validator::addMethod('tel', function(\limepie\validator $validator, $value, $param) {
+
+    return $validator->optional($value) || preg_match('/(0\d{1,2})(-?)(\d{3,4})\2(\d{4})/', $value);
+
+});
