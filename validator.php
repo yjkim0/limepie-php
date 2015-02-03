@@ -41,6 +41,7 @@ class validator
     public function checkRules()
     {
 
+        $result  = TRUE;
         foreach ($this->rules as $name => $rules)
         {
 
@@ -50,7 +51,6 @@ class validator
                 $value = $this->data[$name];
             }
 
-            $result  = TRUE;
             foreach($rules as $methodName => $param)
             {
                 $valid   = FALSE;
