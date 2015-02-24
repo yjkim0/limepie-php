@@ -6,7 +6,7 @@ use limepie\response;
 class json extends response
 {
 
-    public static function success($msg, $data=array())
+    public static function success($msg, $data=[])
     {
         $data['message'] = $msg;
         return parent::json([
@@ -15,7 +15,7 @@ class json extends response
         ]);
     }
 
-    public static function error($msg, $data=array())
+    public static function error($msg, $data=[])
     {
         $data['message'] = $msg;
         return parent::json([
@@ -24,7 +24,7 @@ class json extends response
         ]);
     }
 
-    public static function validator($data=array())
+    public static function validator($data=[])
     {
         return parent::json([
             'status' => 'validator',
