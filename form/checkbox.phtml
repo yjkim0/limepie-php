@@ -1,0 +1,28 @@
+<dl class="form">
+
+    <dt>
+    <?php if($label) : ?>
+        <label for="<?php echo $id;?>"><?php echo $label;?></label>
+    <?php endif;?>
+    </dt>
+    <dd>
+        <div class="dd-text">
+    <?php foreach($options as $option) : ?>
+        <label>
+            <input type=checkbox value="<?php echo $option['value'];?>"<?php if(in_array($option['value'], $value)) : ?> checked<?php endif;?>> <?php echo $option['value'];?>
+            &nbsp;
+        </label>
+    <?php endforeach;?>
+        </div>
+
+        <?php if($note) : ?>
+        <p class='note message'>
+        <?php foreach($note as $v) : ?>
+        <span class=""><?php echo $v;?></span>
+        <?php endforeach; ?>
+        </p>
+        <?php endif; ?>
+
+    </dd>
+
+</dl>

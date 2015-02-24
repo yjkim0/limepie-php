@@ -1,0 +1,20 @@
+<dl class='form'>
+    <?php if($label) : ?>
+    <dt>
+        <label for="<?php echo $id;?>"><?php echo $label;?></label>
+    </dt>
+    <?php endif;?>
+    <dd>
+        <textarea name="<?php echo $name;?>" id="<?php echo $id;?>" class="short"><?php echo $value;?></textarea>
+
+
+        <?php if($note) : ?>
+        <p class='note'>
+        <?php foreach($note as $v) : ?>
+        <span class="message"><?php echo $v;?></span>
+        <?php endforeach; ?>
+        </p>
+        <?php endif; ?>
+
+    </dd>
+</dl>
