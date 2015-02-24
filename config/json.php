@@ -5,16 +5,16 @@ namespace limepie\config;
 class json
 {
 
+    /* setting 하고 return 하지 않음 */
     public static function set($file)
     {
 
-        //var $e, $a, $error;
+        //var $e, $config, $error;
 
         $f = stream_resolve_include_path($file);
         if($f)
         {
-            $a = json_decode(file_get_contents($f), TRUE);
-
+            $config = json_decode(file_get_contents($f), TRUE);
             if (json_last_error())
             {
                 $caller = debug_backtrace()[0];
@@ -22,7 +22,7 @@ class json
             }
             else
             {
-                return $a;
+                \limepie\config::set($config);
             }
         }
         else
@@ -33,24 +33,37 @@ class json
 
     }
 
-    public static function get($file)
+    /* setting 안하고 return 만 함 */
+    public static function get($file, $decode = TRUE)
     {
 
-        //var $e, $a, $error;
+        //var $e, $config, $error;
+
+        if(FALSE !== $decode)
+        {
+            $decode = TRUE;
+        }
 
         $f = stream_resolve_include_path($file);
         if($f)
         {
-            $a = json_decode(file_get_contents($f), TRUE);
-
-            if (json_last_error())
+            $config = file_get_contents($f);
+            if(TRUE === $decode)
             {
-                $caller = debug_backtrace()[0];
-                trigger_error(json_last_error_msg().": ". $file ." in ".$caller['file'].' on line '.$caller['line'].' and defined ', E_USER_ERROR);
+                $config = json_decode($config, TRUE);
+                if (json_last_error())
+                {
+                    $caller = debug_backtrace()[0];
+                    trigger_error(json_last_error_msg().": ". $file ." in ".$caller['file'].' on line '.$caller['line'].' and defined ', E_USER_ERROR);
+                }
+                else
+                {
+                    return $config;
+                }
             }
             else
             {
-                return $a;
+                return $config;
             }
         }
         else

@@ -116,7 +116,7 @@ class config
 
     }
 
-    public static function environment($domains, $func)
+    public static function environment($domains, \Closure $func)
     {
 
         $match = FALSE;
@@ -138,4 +138,5 @@ class config
         }
 
     }
+
 }
