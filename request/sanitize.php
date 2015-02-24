@@ -13,6 +13,7 @@ class sanitize// extends validate
 
         $val  = validate::getData($dataName,$key);
         $data = '';
+
         if(FALSE === request::isEmpty($val))
         {
             switch (trim($type))
@@ -118,6 +119,7 @@ class sanitize// extends validate
                 $caller = debug_backtrace()[1];
                 trigger_error("Missing argument 3 for ".$caller['class'].$caller['type'].$caller['function'].", called in ".$caller['file'].' on line '.$caller['line'].''.' and defined ', E_USER_NOTICE);
             }
+
             return forward_static_call_array('self::run', $arguments);
         }
         $caller = debug_backtrace()[1];
