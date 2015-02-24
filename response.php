@@ -15,19 +15,19 @@ class response
     public static function jsonp($arr)
     {
 
-        $callback = request\get::unsafest('callback', function($val = '') {
-            if($val)
-            {
-                return $val;
-            }
-            return request\post::unsafest('callback', function($val = '') {
-                return $val;
-            });
+        $callback = request\sanitize::get('callback', 'string', function() {
+            return request\sanitize::post('callback', 'string');
         });
 
-        return $callback
-                ? $callback.'('.self::json($arr).');'
-                : self::json($arr);
+        $output = static::json($arr);
+
+        if ($callback) {
+            header('Content-Type: text/javascript');
+            return $callback . '(' . $output . ');';
+        } else {
+            header('Content-Type: application/x-json');
+            return $output;
+        }
 
     }
 
