@@ -5,7 +5,7 @@ namespace limepie;
 class file
 {
 
-    public static function make_dir($path, $permission = 0777)
+    public static function makeDir($path, $permission = 0777)
     {
 
         $dir = '';
@@ -38,7 +38,7 @@ class file
 
     }
 
-    public static function del_dir($path, $php_safe_mode = FALSE)
+    public static function delDir($path, $php_safe_mode = FALSE)
     {
 
         if (!$php_safe_mode)
@@ -60,7 +60,7 @@ class file
 
     }
 
-    public static function dir_scan($dir)
+    public static function dirScan($dir)
     {
 
         $var = array();
