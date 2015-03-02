@@ -5,6 +5,7 @@ namespace limepie\config;
 class php
 {
 
+    /* setting 하고 return 하지 않음 */
     public static function set($file)
     {
 
@@ -26,6 +27,8 @@ class php
         }
 
     }
+
+    /* setting 안하고 return 만 함 */
     public static function get($file)
     {
 

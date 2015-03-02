@@ -2,7 +2,7 @@
 
 namespace limepie;
 
-class model
+class db
 {
 
     public static $driver = NULL;
@@ -13,10 +13,11 @@ class model
 
         if (FALSE === isset(self::$instance[$conn]))
         {
-            self::$instance[$conn] = new \limepie\model\database($conn);
+            self::$instance[$conn] = new \limepie\db\connect($conn);
             self::$instance[$conn]->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
             self::$instance[$conn]->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
             self::$instance[$conn]->setAttribute(\PDO::ATTR_EMULATE_PREPARES, FALSE);
+            //self::$instance[$conn]->setAttribute(\PDO::ATTR_AUTOCOMMIT, FALSE);
         }
 
         return self::$instance[$conn];
@@ -30,7 +31,7 @@ class model
 
     }
 
-    public static function db($driver = 'master')
+    public static function connect($driver = 'master')
     {
 
         return self::getInstance($driver);
@@ -38,6 +39,13 @@ class model
     }
 
     public static function begin($driver = 'master')
+    {
+
+        return self::getInstance($driver)->begin();
+
+    }
+
+    public static function start($driver = 'master')
     {
 
         return self::getInstance($driver)->begin();

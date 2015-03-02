@@ -6,8 +6,13 @@
 <?php endif;?>
     <dd>
         <input type="<?php echo $type;?>" name="<?php echo $name;?>" value="<?php echo $value;?>" id="<?php echo $id;?>" class="short">
-        <?php if(TRUE === isset($note) && $note) : ?>
-        <p class="note"><?php echo $note;?></p>
+
+        <?php if($note) : ?>
+        <p class='note'>
+        <?php foreach($note as $v) : ?>
+        <span class="message"><?php echo $v;?></span>
+        <?php endforeach; ?>
+        </p>
         <?php endif; ?>
 
     </dd>

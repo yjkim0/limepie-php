@@ -1,13 +1,20 @@
 <dl class='form'>
-<?php if($label) : ?>
+    <?php if($label) : ?>
     <dt>
         <label for="<?php echo $id;?>"><?php echo $label;?></label>
     </dt>
-<?php endif;?>
+    <?php endif;?>
     <dd>
         <textarea name="<?php echo $name;?>" id="<?php echo $id;?>" class="short"><?php echo $value;?></textarea>
-        <?php if(TRUE === isset($note) && $note) : ?>
-        <p class="note"><?php echo $note;?></p>
+
+
+        <?php if($note) : ?>
+        <p class='note'>
+        <?php foreach($note as $v) : ?>
+        <span class="message"><?php echo $v;?></span>
+        <?php endforeach; ?>
+        </p>
         <?php endif; ?>
+
     </dd>
 </dl>

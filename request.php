@@ -54,6 +54,62 @@ class request
 
     }
 
+    public static function dataAll()
+    {
+
+        return self::$data;
+
+    }
+
+    public static function postAll()
+    {
+
+        return self::$data['post'];
+
+    }
+
+    public static function getAll()
+    {
+
+        return self::$data['get'];
+
+    }
+
+    public static function cookieAll()
+    {
+
+        return self::$data['cookie'];
+
+    }
+
+    public static function sessionAll()
+    {
+
+        return self::$data['session'];
+
+    }
+
+    public static function serverAll()
+    {
+
+        return self::$data['server'];
+
+    }
+
+    public static function segmentAll()
+    {
+
+        return self::$data['segment'];
+
+    }
+
+    public static function parameterAll()
+    {
+
+        return self::$data['parameter'];
+
+    }
+
     public static function isPost()
     {
 
@@ -91,6 +147,17 @@ class request
             .(($p = getenv('SERVER_PORT')) != 80 AND $p != 443 ? ":$p" : '')
             .parse_url(getenv('REQUEST_URI'), PHP_URL_PATH)
             .(getenv('QUERY_STRING') ? '?'.getenv('QUERY_STRING') : '')
+            ;
+
+    }
+
+    public static function currentDomain()
+    {
+
+        return (strtolower(getenv('HTTPS')) == 'on' ? 'https' : 'http')
+            .'://'
+            .getenv('HTTP_HOST')
+            .(($p = getenv('SERVER_PORT')) != 80 AND $p != 443 ? ":$p" : '')
             ;
 
     }

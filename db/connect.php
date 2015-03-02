@@ -1,8 +1,8 @@
 <?php
 
-namespace limepie\model;
+namespace limepie\db;
 
-class Database extends \Pdo
+class connect extends \Pdo
 {
 
     public function __construct($name)
@@ -12,13 +12,14 @@ class Database extends \Pdo
 
         if (TRUE === isset($connect["dsn"])
             && TRUE === isset($connect["username"])
-            && TRUE === isset($connect["password"]))
+            && TRUE === isset($connect["password"])
+        )
         {
             parent::__construct($connect["dsn"], $connect["username"], $connect["password"]);
         }
         else
         {
-            throw new \limepie\model\Exception($name . " config를 확인하세요.");
+            throw new \limepie\db\exception($name . " config를 확인하세요.");
         }
 
     }
@@ -70,11 +71,7 @@ class Database extends \Pdo
         }
         catch (\PDOException $e)
         {
-            if (self::inTransaction())
-            {
-                self::rollback();
-            }
-            throw new \limepie\model\exception($e);
+            throw new \limepie\db\exception($e);
         }
 
     }
@@ -95,11 +92,7 @@ class Database extends \Pdo
         }
         catch (\PDOException $e)
         {
-            if (self::inTransaction())
-            {
-                self::rollback();
-            }
-            throw new \limepie\model\exception($e);
+            throw new \limepie\db\exception($e);
         }
 
     }
@@ -130,11 +123,7 @@ class Database extends \Pdo
         }
         catch (\PDOException $e)
         {
-            if (self::inTransaction())
-            {
-                self::rollback();
-            }
-            throw new \limepie\model\exception($e);
+            throw new \limepie\db\exception($e);
         }
 
     }
@@ -148,11 +137,7 @@ class Database extends \Pdo
         }
         catch (\PDOException $e)
         {
-            if (self::inTransaction())
-            {
-                self::rollback();
-            }
-            throw new \limepie\model\exception($e);
+            throw new \limepie\db\exception($e);
         }
 
     }
@@ -189,31 +174,45 @@ class Database extends \Pdo
 
     }
 
-    public function start()
-    {
-
-        return self::begin();
-
-    }
-
     public function begin()
     {
 
-        return parent::beginTransaction();
+        try
+        {
+            return self::beginTransaction();
+        }
+        catch (\PDOException $e)
+        {
+            throw new \limepie\db\exception($e);
+        }
 
     }
 
     public function rollback()
     {
 
-        return parent::rollBack();
+        try
+        {
+            return parent::rollBack();
+        }
+        catch (\PDOException $e)
+        {
+            throw new \limepie\db\exception($e);
+        }
 
     }
 
     public function commit()
     {
 
-        return parent::commit();
+        try
+        {
+            return parent::commit();
+        }
+        catch (\PDOException $e)
+        {
+            throw new \limepie\db\exception($e);
+        }
 
     }
 

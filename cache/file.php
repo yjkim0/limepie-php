@@ -87,7 +87,7 @@ class file
         }
 
         $path    = self::_cache_name($id);
-        self::make_dir(dirname($path));
+        self::makeDir(dirname($path));
 
         $fp      = fopen($path, "w");
         if (!$fp)
@@ -127,7 +127,7 @@ class file
 
     }
 
-    public static function make_dir($path, $permission = 0777)
+    public static function makeDir($path, $permission = 0777)
     {
 
         $dir = "";

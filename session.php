@@ -4,7 +4,6 @@ namespace limepie;
 class session
 {
 
-
     /**
      * 합리적인 기본값으로 세션을 시작하는 함수
      *
@@ -68,6 +67,8 @@ class session
         {
             $_SESSION['__AUTOREFRESH__'] = time();
         }
+
+        request::addData("session", $_SESSION);
 
     }
 
