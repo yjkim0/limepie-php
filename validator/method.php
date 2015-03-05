@@ -150,13 +150,13 @@ validator::addMethod('range', function($name, $value, $param) {
 
 });
 
-validator::addMethod('email', function($value) {
+validator::addMethod('email', function($name, $value, $param) {
 
     return $this->optional($value) || filter_var($value, FILTER_VALIDATE_EMAIL) !== FALSE;
 
 });
 
-validator::addMethod('url', function($value) {
+validator::addMethod('url', function($name, $value, $param) {
 
     if ($this->optional($value))
     {
@@ -172,19 +172,19 @@ validator::addMethod('url', function($value) {
 
 });
 
-validator::addMethod('date', function($value) {
+validator::addMethod('date', function($name, $value, $param) {
 
     return $this->optional($value) || strtotime($value) !== FALSE;
 
 });
 
-validator::addMethod('number', function($value) {
+validator::addMethod('number', function($name, $value, $param) {
 
     return $this->optional($value) || is_numeric($value);
 
 });
 
-validator::addMethod('digits', function($value) {
+validator::addMethod('digits', function($name, $value, $param) {
 
     return $this->optional($value) || preg_match('/^\d+$/', $value);
 
@@ -213,7 +213,7 @@ validator::addMethod('password', function($name, $value, $param) {
 
 });
 
-validator::addMethod('birthday', function($value) {
+validator::addMethod('birthday', function($name, $value, $param) {
 
     return $this->optional($value) || preg_match('/^\d\d\d\d\d\d\d\d$/', $value) && strtotime($value) !== FALSE && $value < date('Ymd');
 
