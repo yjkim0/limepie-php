@@ -9,21 +9,21 @@ validator::addMethod('required', function($name, $value, $param) {
 
 }, '필수 항목입니다. 입력해주세요.');
 
-validator::addMethod('minLength', function($name, $value, $param) {
+validator::addMethod('minlength', function($name, $value, $param) {
 
     $length = is_array($value) ? count($value) : strlen($value);
     return $this->optional($value) || $length >= $param;
 
 });
 
-validator::addMethod('maxLength', function($name, $value, $param) {
+validator::addMethod('maxlength', function($name, $value, $param) {
 
     $length = is_array($value) ? count($value) : strlen($value);
     return $this->optional($value) || $length <= $param;
 
 });
 
-validator::addMethod('rangeLength', function($name, $value, $param) {
+validator::addMethod('rangelength', function($name, $value, $param) {
 
     $length = is_array($value) ? count($value) : strlen($value);
     return $this->optional($value) || $length >= $param[0] && $length <= $param[1];
