@@ -63,6 +63,19 @@ class i18n
             }
             return $var;
         }
+
+        if($args)
+        {
+            $p = $args;
+            if(FALSE === is_array($args))
+            {
+                $p = [$args];
+            }
+            for($i=0,$j=count($p);$i<$j;$i++)
+            {
+                $data = preg_replace("/\{".$i."\}/",array_shift($p),$data);
+            }
+        }
         return $data;
 
     }
