@@ -221,7 +221,7 @@ validator::addMethod('birthday', function($name, $value, $param) {
 
 validator::addMethod('joinage', function($name, $value, $param) {
 
-    return $this->optional($value) || date("Y") - (int)substr($value,0,4) >= (int)$param - 1;
+    return $this->optional($value) || (date("Y") - (int)substr($value,0,4) >= (int)$param - 1 ) && ((int)substr($value,0,4) >= 1900);
 
 });
 
