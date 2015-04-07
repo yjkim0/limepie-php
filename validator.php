@@ -14,10 +14,10 @@ if(\limepie\config::defined("validator-method-path"))
 class validator
 {
 
-    private $data;
-    private $rules;
-    private $messages;
-    private $errors = [];
+    private $data     = [];
+    private $rules    = [];
+    private $messages = [];
+    private $errors   = [];
 
     private static $defaultMessages = [
         'required'    => "필수 항목입니다.",
@@ -41,11 +41,12 @@ class validator
     private function __construct($data, $rules, $messages='')
     {
 
-        if($data)     $this->data     = self::keyFlatten($data);
+        if($data)     $this->data     = static::keyFlatten($data);
         if($rules)    $this->rules    = $rules;
         if($messages) $this->messages = $messages;
 
-        foreach(self::$methods as $methodName => $method) {
+        foreach(static::$methods as $methodName => $method)
+        {
             static::$methods[$methodName] = \Closure::bind($method, $this);
         }
 
@@ -61,7 +62,7 @@ class validator
     public static function addMethod($methodName, \Closure $methodCallable, $message='')
     {
 
-        if($message) self::$defaultMessages[$methodName] = $message;
+        if($message) static::$defaultMessages[$methodName] = $message;
         static::$methods[$methodName] = $methodCallable;
 
     }
@@ -70,9 +71,12 @@ class validator
 
         $isChild = FALSE;
         $return = [];
-        foreach ($data as $name => $value) {
-            if (TRUE === is_array($value)) {
-                foreach ($value as $subName => $subValue) {
+        foreach ($data as $name => $value)
+        {
+            if (TRUE === is_array($value))
+            {
+                foreach ($value as $subName => $subValue)
+                {
                     if(TRUE === is_numeric($subName))
                     {
                         $return[$name][$subName] = $subValue;
@@ -83,12 +87,15 @@ class validator
                         $return[$name.'['.$subName.']'] = $subValue;
                     }
                 }
-            } else {
+            }
+            else
+            {
                 $return[$name] = $value;
             }
         }
-        if (TRUE === $isChild) {
-            $return = self::keyFlatten($return);
+        if (TRUE === $isChild)
+        {
+            $return = static::keyFlatten($return);
         }
 
         return $return;
@@ -102,7 +109,6 @@ class validator
         $result  = TRUE;
         foreach ($this->rules as $name => $rules)
         {
-
             $value = NULL;
 
             if (TRUE === isset($this->data[$name]))
@@ -113,9 +119,9 @@ class validator
             foreach($rules as $methodName => $param)
             {
                 $valid   = FALSE;
-                if (TRUE === isset(self::$methods[$methodName]))
+                if (TRUE === isset(static::$methods[$methodName]))
                 {
-                    $method = self::$methods[$methodName];
+                    $method = static::$methods[$methodName];
 
                     if(TRUE === $method($name, $value, $param))
                     {
@@ -147,9 +153,9 @@ class validator
         {
             $message = $this->messages[$name][$methodName];
         }
-        else if(TRUE === isset(self::$defaultMessages[$methodName]))
+        else if(TRUE === isset(static::$defaultMessages[$methodName]))
         {
-            $message = self::$defaultMessages[$methodName];
+            $message = static::$defaultMessages[$methodName];
         }
 
         if($message)
@@ -189,7 +195,14 @@ class validator
     public function getData($param)
     {
 
-        return TRUE === isset($this->data[$param]) ? $this->data[$param] : NULL;
+        return TRUE === isset($this->data[$param]) ? $this->data[$param] : '';
+
+    }
+
+    public function getDataAll()
+    {
+
+        return $this->data;
 
     }
 
