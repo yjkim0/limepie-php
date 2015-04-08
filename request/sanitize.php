@@ -12,6 +12,36 @@ class sanitize// extends validate
     {
 
         $val  = validate::getData($dataName,$key);
+        $arrType = explode('.', $type);
+        if(2 === count($arrType))
+        {
+            $data = [];
+            if(TRUE === is_array($val))
+            {
+                foreach($val as $key => $value)
+                {
+                    if($tmp = $this->_run($value, $arrType[1]))
+                    {
+                        $data[$key] = $tmp;
+                    }
+                }
+            }
+            if(TRUE === request::isEmpty($data))
+            {
+                return $default;
+            }
+            return $data;
+        }
+        else
+        {
+            return self::_run($val, $type, $default);
+        }
+
+    }
+
+    private static function _run($val, $type, $default=NULL)
+    {
+
         $data = '';
 
         if(FALSE === request::isEmpty($val))
@@ -47,7 +77,7 @@ class sanitize// extends validate
                     break;
                 default :
                     //error
-                    $caller = debug_backtrace()[2];
+                    $caller = debug_backtrace()[3];
                     trigger_error("Undefined method: ".$type." in ".$caller['file'].' on line '.$caller['line'].' and defined ', E_USER_NOTICE);
                     return;
                     break;
@@ -95,7 +125,7 @@ class sanitize// extends validate
         }
         else
         {
-            $caller = debug_backtrace()[3];
+            $caller = debug_backtrace()[4];
             if(TRUE === is_null($default))
             {
                 trigger_error("Argument 1 passed to ".$type." or NULL must be an instance of ".$caller['function'].", ".gettype($data)." given, called in ".$caller['file'].' on line '.$caller['line'].''.' and defined ', E_USER_NOTICE);
@@ -111,13 +141,19 @@ class sanitize// extends validate
     public static function __callStatic($name, $arguments)
     {
 
-        if(TRUE === in_array($name, ['post', 'get', 'session', 'cookie', 'server', 'parameter', 'segment']))
+        if(TRUE === in_array($name, ['request', 'post', 'get', 'session', 'cookie', 'server', 'parameter', 'segment']))
         {
             array_unshift($arguments, $name);
             if(TRUE === self::$defaultNoticeError && 3 === count($arguments))
             {
                 $caller = debug_backtrace()[1];
                 trigger_error("Missing argument 3 for ".$caller['class'].$caller['type'].$caller['function'].", called in ".$caller['file'].' on line '.$caller['line'].''.' and defined ', E_USER_NOTICE);
+            }
+            if(3 > count($arguments))
+            {
+                $caller = debug_backtrace()[1];
+                trigger_error("Missing argument 3 for ".$caller['class'].$caller['type'].$caller['function'].", called in ".$caller['file'].' on line '.$caller['line'].''.' and defined ', E_USER_NOTICE);
+                return;
             }
 
             return forward_static_call_array('self::run', $arguments);
@@ -188,7 +224,7 @@ class sanitize// extends validate
     public static function raw($val)
     {
 
-        return $val;
+        return TRUE !== is_null($val) ? $val : FALSE;
 
     }
 
