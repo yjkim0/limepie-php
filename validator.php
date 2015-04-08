@@ -41,13 +41,13 @@ class validator
     private function __construct($data, $rules, $messages='')
     {
 
-        if($data)     $this->data     = static::keyFlatten($data);
+        if($data)     $this->data     = self::keyFlatten($data);
         if($rules)    $this->rules    = $rules;
         if($messages) $this->messages = $messages;
 
-        foreach(static::$methods as $methodName => $method)
+        foreach(self::$methods as $methodName => $method)
         {
-            static::$methods[$methodName] = \Closure::bind($method, $this);
+            self::$methods[$methodName] = \Closure::bind($method, $this);
         }
 
     }
@@ -62,8 +62,8 @@ class validator
     public static function addMethod($methodName, \Closure $methodCallable, $message='')
     {
 
-        if($message) static::$defaultMessages[$methodName] = $message;
-        static::$methods[$methodName] = $methodCallable;
+        if($message) self::$defaultMessages[$methodName] = $message;
+        self::$methods[$methodName] = $methodCallable;
 
     }
 
@@ -95,7 +95,7 @@ class validator
         }
         if (TRUE === $isChild)
         {
-            $return = static::keyFlatten($return);
+            $return = self::keyFlatten($return);
         }
 
         return $return;
@@ -119,9 +119,9 @@ class validator
             foreach($rules as $methodName => $param)
             {
                 $valid   = FALSE;
-                if (TRUE === isset(static::$methods[$methodName]))
+                if (TRUE === isset(self::$methods[$methodName]))
                 {
-                    $method = static::$methods[$methodName];
+                    $method = self::$methods[$methodName];
 
                     if(TRUE === $method($name, $value, $param))
                     {
@@ -153,20 +153,19 @@ class validator
         {
             $message = $this->messages[$name][$methodName];
         }
-        else if(TRUE === isset(static::$defaultMessages[$methodName]))
+        else if(TRUE === isset(self::$defaultMessages[$methodName]))
         {
-            $message = static::$defaultMessages[$methodName];
+            $message = self::$defaultMessages[$methodName];
         }
 
         if($message)
         {
-            $p = $param;
             if (FALSE === is_array($param))
             {
-                $p = [$param];
+                $param = [$param];
             }
-            $message = [preg_replace("/\\{([0-9]+)\\}/", "%s", $message)];
-            $message = call_user_func_array("sprintf", array_merge($message , $p));
+            $paramArr = array_merge([preg_replace("/\\{([0-9]+)\\}/", "%s", $message)] , $param);
+            $message  = call_user_func_array("sprintf", $paramArr);
         }
 
         $this->errors[$name][$methodName] = [
