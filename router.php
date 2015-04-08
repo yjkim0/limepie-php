@@ -371,13 +371,13 @@ class router
 
     }
 
-    public function setError($errorMessage, $errorCode, $requireFileInfo)
+    public function setError($errorMessage, $errorCode, $arguments)
     {
 
         $this->errorInfo = [
-            "errorMessage"    => $errorMessage,
-            "errorCode"       => $errorCode,
-            "requireFileInfo" => $requireFileInfo
+            "errorMessage" => $errorMessage,
+            "errorCode"    => $errorCode,
+            "arguments"    => $arguments
         ];
 
     }
