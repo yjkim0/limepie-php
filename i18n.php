@@ -63,6 +63,17 @@ class i18n
             }
             return $var;
         }
+
+        if($data)
+        {
+            if (FALSE === is_array($args))
+            {
+                $args = [$args];
+            }
+            $paramArr = array_merge([preg_replace("/\\{([0-9]+)\\}/", "%s", $data)] , $args);
+            $data = call_user_func_array("sprintf", $paramArr);
+        }
+
         return $data;
 
     }
