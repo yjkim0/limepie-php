@@ -11,6 +11,7 @@ class request
 
         self::addData('get',     isset($_GET)     ? $_GET     : []);
         self::addData('post',    isset($_POST)    ? $_POST    : []);
+        self::addData('request', isset($_REQUEST) ? $_REQUEST : []);
         self::addData('cookie',  isset($_COOKIE)  ? $_COOKIE  : []);
         self::addData('session', isset($_SESSION) ? $_SESSION : []);
         self::addData('server',  isset($_SERVER)  ? $_SERVER  : []);
@@ -23,11 +24,13 @@ class request
     }
 
     // '', false는 true, 나머지 false
-    public static function isEmpty($val) {
+    public static function isEmpty($val)
+    {
+
         if(
             //TRUE === is_bool($val)
             TRUE === $val
-            || TRUE === is_array($val) && TRUE === isset($val[0])
+            || TRUE === is_array($val) && 0 < count($val)
             || TRUE === is_object($val)
             || FALSE === empty($val)
             || TRUE === is_null($val)
@@ -72,6 +75,13 @@ class request
     {
 
         return self::$data['get'];
+
+    }
+
+    public static function requestAll()
+    {
+
+        return self::$data['request'];
 
     }
 
