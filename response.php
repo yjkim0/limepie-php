@@ -15,33 +15,39 @@ class response
     public static function jsonp($arr)
     {
 
-        $callback = request\sanitize::get('callback', 'string', function() {
-            return request\sanitize::post('callback', 'string');
-        });
+        $callback = request\sanitize::request('callback', 'string');
+        $output   = static::json($arr);
 
-        $output = static::json($arr);
-
-        if ($callback) {
+        if ($callback)
+        {
             header('Content-Type: text/javascript');
             return $callback . '(' . $output . ');';
-        } else {
+        }
+        else
+        {
             header('Content-Type: application/x-json');
             return $output;
         }
 
     }
 
-    public static function jsredirect($strUrl, $strMsg='')
+    public static function header($content = '', $status = 200, $headers = [])
     {
-        if(FALSE === empty($strMsg))
-        {
-            echo '<script type="text/javascript">alert("'.$strMsg.'");</script>';
-        }
-        if(FALSE === empty($strUrl))
-        {
-            echo '<script type="text/javascript">window.location.href="'.$strUrl.'";</script>';
-            exit();
-        }
+
+    }
+
+    public static function redirect($url)
+    {
+
+        header('HTTP/1.1 301 Moved Permanently');
+        header('Location: '.$url);
+        die();
+
+    }
+
+    public static function forward($router)
+    {
+
     }
 
 }
