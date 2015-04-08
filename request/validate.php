@@ -10,7 +10,37 @@ class validate extends request
     public static function run($dataName, $key, $type, $default=NULL)
     {
 
-        $val = validate::getData($dataName,$key);
+        $val  = validate::getData($dataName,$key);
+        $arrType = explode('.', $type);
+        if(2 === count($arrType))
+        {
+            $data = [];
+            if(TRUE === is_array($val))
+            {
+                foreach($val as $key => $value)
+                {
+                    if($tmp = $this->_run($value, $arrType[1]))
+                    {
+                        $data[$key] = $tmp;
+                    }
+                }
+            }
+            if(TRUE === request::isEmpty($data))
+            {
+                return $default;
+            }
+            return $data;
+        }
+        else
+        {
+            return self::_run($val, $type, $default);
+        }
+
+    }
+
+    private static function _run($val, $type, $default=NULL)
+    {
+
         $data = '';
 
         if(FALSE === request::isEmpty($val))
@@ -37,7 +67,7 @@ class validate extends request
                     break;
                 default :
                     //error
-                    $caller = debug_backtrace()[2];
+                    $caller = debug_backtrace()[3];
                     trigger_error("Undefined method: ".$type." in ".$caller['file'].' on line '.$caller['line'].' and defined ', E_USER_NOTICE);
                     return;
                     break;
@@ -83,13 +113,19 @@ class validate extends request
     public static function __callStatic($name, $arguments)
     {
 
-        if(TRUE === in_array($name, ['post', 'get', 'session', 'cookie', 'server', 'parameter', 'segment']))
+        if(TRUE === in_array($name, ['request', 'post', 'get', 'session', 'cookie', 'server', 'parameter', 'segment']))
         {
             array_unshift($arguments, $name);
             if(TRUE === self::$defaultNoticeError && 3 === count($arguments))
             {
                 $caller = debug_backtrace()[1];
                 trigger_error("Missing argument 3 for ".$caller['class'].$caller['type'].$caller['function'].", called in ".$caller['file'].' on line '.$caller['line'].''.' and defined ', E_USER_NOTICE);
+            }
+            if(3 > count($arguments))
+            {
+                $caller = debug_backtrace()[1];
+                trigger_error("Missing argument 3 for ".$caller['class'].$caller['type'].$caller['function'].", called in ".$caller['file'].' on line '.$caller['line'].''.' and defined ', E_USER_NOTICE);
+                return;
             }
             return forward_static_call_array('self::run', $arguments);
         }
