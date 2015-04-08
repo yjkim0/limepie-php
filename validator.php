@@ -47,7 +47,7 @@ class validator
 
         foreach(self::$methods as $methodName => $method)
         {
-            self::$methods[$methodName] = \Closure::bind($method, $this);
+            self::$methods[strtolower($methodName)] = \Closure::bind($method, $this);
         }
 
     }
@@ -116,9 +116,10 @@ class validator
                 $value = $this->data[$name];
             }
 
-            foreach($rules as $methodName => $param)
+            foreach($rules as $_methodName => $param)
             {
                 $valid   = FALSE;
+                $methodName = strtolower($_methodName);
                 if (TRUE === isset(self::$methods[$methodName]))
                 {
                     $method = self::$methods[$methodName];
@@ -130,7 +131,7 @@ class validator
                 }
                 else
                 {
-                    throw new \limepie\validator\Exception("not found '" . $methodName . "' validate rule");
+                    throw new \limepie\validator\Exception("not found '" . $_methodName . "' validate rule");
                 }
 
                 if (FALSE === $valid)

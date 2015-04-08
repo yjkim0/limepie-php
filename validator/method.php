@@ -9,6 +9,41 @@ validator::addMethod('required', function($name, $value, $param) {
 
 }, '필수 항목입니다. 입력해주세요.');
 
+validator::addMethod('equalTo', function($name, $value, $param) {
+
+    if ($this->optional($value))
+    {
+        return TRUE;
+    }
+
+    $valid = FALSE;
+    if ($param)
+    {
+        $valid = ($value === $this->getData($param));
+    }
+
+    return $valid;
+
+}, '{0}와 일치하지 않음.');
+
+validator::addMethod('min', function($name, $value, $param) {
+
+    return $this->optional($value) || $value >= $param;
+
+});
+
+validator::addMethod('max', function($name, $value, $param) {
+
+    return $this->optional($value) || $value <= $param;
+
+});
+
+validator::addMethod('range', function($name, $value, $param) {
+
+    return $this->optional($value) || $value >= $param[0] && $value <= $param[1];
+
+});
+
 validator::addMethod('minLength', function($name, $value, $param) {
 
     $length = is_array($value) ? count($value) : strlen($value);
@@ -75,6 +110,24 @@ validator::addMethod('hasNumber', function($name, $value, $param) {
 
 });
 
+validator::addMethod('number', function($name, $value, $param) {
+
+    return $this->optional($value) || preg_match('#^[0-9]+$#', $value);
+
+});
+
+validator::addMethod('numeric', function($name, $value, $param) {
+
+    return $this->optional($value) || is_numeric($value);
+
+});
+
+validator::addMethod('digits', function($name, $value, $param) {
+
+    return $this->optional($value) || preg_match('/^\d+$/', $value);
+
+});
+
 validator::addMethod('alpha', function($name, $value, $param) {
 
     return $this->optional($value) || preg_match('#^[a-z]+$#', $value);
@@ -131,32 +184,13 @@ validator::addMethod('remote', function($name, $value, $param) {
 
 });
 
-
-validator::addMethod('min', function($name, $value, $param) {
-
-    return $this->optional($value) || $value >= $param;
-
-});
-
-validator::addMethod('max', function($name, $value, $param) {
-
-    return $this->optional($value) || $value <= $param;
-
-});
-
-validator::addMethod('range', function($name, $value, $param) {
-
-    return $this->optional($value) || $value >= $param[0] && $value <= $param[1];
-
-});
-
-validator::addMethod('email', function($value) {
+validator::addMethod('email', function($name, $value, $param) {
 
     return $this->optional($value) || filter_var($value, FILTER_VALIDATE_EMAIL) !== FALSE;
 
 });
 
-validator::addMethod('url', function($value) {
+validator::addMethod('url', function($name, $value, $param) {
 
     if ($this->optional($value))
     {
@@ -172,59 +206,6 @@ validator::addMethod('url', function($value) {
 
 });
 
-validator::addMethod('date', function($value) {
-
-    return $this->optional($value) || strtotime($value) !== FALSE;
-
-});
-
-validator::addMethod('number', function($value) {
-
-    return $this->optional($value) || is_numeric($value);
-
-});
-
-validator::addMethod('digits', function($value) {
-
-    return $this->optional($value) || preg_match('/^\d+$/', $value);
-
-});
-
-validator::addMethod('equalTo', function($name, $value, $param) {
-
-    if ($this->optional($value))
-    {
-        return TRUE;
-    }
-
-    $valid = FALSE;
-    if ($param)
-    {
-        $valid = ($value === $this->getData($param));
-    }
-
-    return $valid;
-
-}, '{0}와 일치하지 않음.');
-
-validator::addMethod('password', function($name, $value, $param) {
-
-    return $this->optional($value) || preg_match("#^(?=^.{6,12}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[".preg_quote("!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,",'#')."])(?!.*\s).*$#", $value);
-
-});
-
-validator::addMethod('birthday', function($value) {
-
-    return $this->optional($value) || preg_match('/^\d\d\d\d\d\d\d\d$/', $value) && strtotime($value) !== FALSE && $value < date('Ymd');
-
-});
-
-validator::addMethod('joinage', function($name, $value, $param) {
-
-    return $this->optional($value) || date("Y") - (int)substr($value,0,4) >= (int)$param - 1;
-
-});
-
 validator::addMethod('mobile', function($name, $value, $param) {
 
     return $this->optional($value) || preg_match('/(01[0,1,6,7,9])(-?)(\d{3,4})\2(\d{4})/', $value);
@@ -234,5 +215,23 @@ validator::addMethod('mobile', function($name, $value, $param) {
 validator::addMethod('tel', function($name, $value, $param) {
 
     return $this->optional($value) || preg_match('/(0\d{1,2})(-?)(\d{3,4})\2(\d{4})/', $value);
+
+});
+
+validator::addMethod('date', function($name, $value, $param) {
+
+    return $this->optional($value) || strtotime($value) !== FALSE;
+
+});
+
+validator::addMethod('birthday', function($name, $value, $param) {
+
+    return $this->optional($value) || preg_match('/^\d\d\d\d\d\d\d\d$/', $value) && strtotime($value) !== FALSE && $value < date('Ymd');
+
+});
+
+validator::addMethod('joinage', function($name, $value, $param) {
+
+    return $this->optional($value) || date("Y") - (int)substr($value,0,4) >= (int)$param - 1;
 
 });
