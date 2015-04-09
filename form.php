@@ -8,7 +8,7 @@ class form
     public static function getFilter($schema)
     {
 
-        $filter = [];
+        $filter = ['rules' => [], 'messages' => []];
         foreach ($schema as $propertyName => $propertySchema)
         {
             if(TRUE === isset($propertySchema['rules']))
@@ -52,7 +52,7 @@ class form
 
     }
 
-    public static function parser($schema)
+    private static function parser($schema)
     {
 
         extract($schema);
