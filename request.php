@@ -186,7 +186,7 @@ class request
 
         if(!self::$segments)
         {
-            self::$segments = explode("/", self::$pathinfo);
+            self::$segments = explode("/", self::getPathinfo());
         }
         return self::$segments;
 
