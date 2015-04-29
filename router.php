@@ -35,9 +35,8 @@ class router
     {
 
         $this->routes = $routes;
-        $this->setPathinfo();
-
-        $this->segments = explode("/", $this->pathinfo);
+        $this->pathinfo = \limepie\request::getPathinfo();
+        $this->segments = \limepie\request::getSegments();
 
         // set request segment
         request::addData("segment", $this->segments);
@@ -195,20 +194,6 @@ class router
     {
 
         return $this->pathinfo;
-
-    }
-
-    public function setPathinfo()
-    {
-
-        if (TRUE === isset($_SERVER["PATH_INFO"]))
-        {
-            $this->pathinfo  = trim($_SERVER["PATH_INFO"], "/");
-        }
-        else
-        {
-            $this->pathinfo  = "";
-        }
 
     }
 

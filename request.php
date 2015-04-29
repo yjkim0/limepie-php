@@ -5,6 +5,8 @@ class request
 {
 
     public static $data;
+    public static $pathinfo;
+    public static $segments;
 
     public static function initialize(\Closure $callback=NULL)
     {
@@ -158,6 +160,35 @@ class request
             .parse_url(getenv('REQUEST_URI'), PHP_URL_PATH)
             .(getenv('QUERY_STRING') ? '?'.getenv('QUERY_STRING') : '')
             ;
+
+    }
+
+    public static function getPathinfo()
+    {
+
+        if(!self::$pathinfo)
+        {
+            if (TRUE === isset($_SERVER["PATH_INFO"]))
+            {
+                self::$pathinfo  = trim($_SERVER["PATH_INFO"], "/");
+            }
+            else
+            {
+                self::$pathinfo  = "";
+            }
+        }
+        return self::$pathinfo;
+
+    }
+
+    public static function getSegments()
+    {
+
+        if(!self::$segments)
+        {
+            self::$segments = explode("/", self::$pathinfo);
+        }
+        return self::$segments;
 
     }
 
