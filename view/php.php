@@ -85,6 +85,14 @@ class php
 
     }
 
+    public function add($path)
+    {
+
+        self::define('*', $path);
+        return self::fetch('*');
+
+    }
+
     public function render($fid)
     {
 
