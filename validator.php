@@ -145,10 +145,11 @@ class validator
 
     }
 
-    private function addError($name, $methodName, $param)
+    private function getMessage($name, $methodName)
     {
 
         $message = "";
+
         if (TRUE === isset($this->messages[$name])
             && TRUE === isset($this->messages[$name][$methodName]))
         {
@@ -158,6 +159,15 @@ class validator
         {
             $message = self::$defaultMessages[$methodName];
         }
+
+        return $message;
+
+    }
+
+    private function addError($name, $methodName, $param)
+    {
+
+        $message = self::getMessage($name, $methodName);
 
         if($message)
         {
