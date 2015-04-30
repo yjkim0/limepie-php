@@ -249,7 +249,10 @@ class router
         foreach ($this->systemVariables as $key)
         {
             $funcKey = "get" . $key;
-            $ret[$key] = $this->{$funcKey}();
+            if($tmp = $this->{$funcKey}())
+            {
+                $ret[$key] = $tmp;
+            }
         }
         return $ret;
 
@@ -259,6 +262,21 @@ class router
     {
 
         return $this->matchRoute;
+
+    }
+
+    public function getDefaultVar($arr)
+    {
+
+        $ret = [];
+        foreach($arr as $key => $value)
+        {
+            if($value)
+            {
+                $ret[$key] = $value;
+            }
+        }
+        return $ret;
 
     }
 
@@ -277,6 +295,8 @@ class router
         $m1               = NULL;
         foreach ($this->routes as $rule => $defaultVar)
         {
+
+            $defaultVar = $this->getDefaultVar($defaultVar);
             if (preg_match("#^" . $rule . "#", $this->pathinfo, $m1))
             {
                 $parameters = $this->getSystemVariables();
