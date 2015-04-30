@@ -296,10 +296,11 @@ class router
         foreach ($this->routes as $rule => $defaultVar)
         {
 
-            $defaultVar = $this->getDefaultVar($defaultVar);
             if (preg_match("#^" . $rule . "#", $this->pathinfo, $m1))
             {
                 $parameters = $this->getSystemVariables();
+                $defaultVar = $this->getDefaultVar($defaultVar);
+
                 $this->parameters = $defaultVar + $parameters; // defaultVar 우선
 
                 $_path  = [];
