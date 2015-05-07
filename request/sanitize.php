@@ -20,7 +20,7 @@ class sanitize// extends validate
             {
                 foreach($val as $key => $value)
                 {
-                    if($tmp = $this->_run($value, $arrType[1]))
+                    if($tmp = self::_run($value, $arrType[1]))
                     {
                         $data[$key] = $tmp;
                     }
