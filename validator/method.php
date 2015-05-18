@@ -235,3 +235,9 @@ validator::addMethod('joinage', function($name, $value, $param) {
     return $this->optional($value) || date("Y") - (int)substr($value,0,4) >= (int)$param - 1;
 
 });
+
+validator::addMethod('password', function($name, $value, $param) {
+
+    return $this->optional($value) || preg_match("#^(?=^.{6,32}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[".preg_quote("!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,",'#')."])(?!.*\s).*$#", $value);
+
+});
