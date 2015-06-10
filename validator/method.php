@@ -235,3 +235,34 @@ validator::addMethod('joinage', function($name, $value, $param) {
     return $this->optional($value) || date("Y") - (int)substr($value,0,4) >= (int)$param - 1;
 
 });
+
+validator::addMethod('businessNumber', function($name, $value, $param) {
+
+    if ($this->optional($value))
+    {
+        return TRUE;
+    }
+    if (strlen($value)!=10)
+    {
+        return FALSE;
+    }
+    $sumMod = 0;
+    $sumMod += (int)(substr($value,0,1));
+    $sumMod += (int)(substr($value,1,1)) * 3 % 10;
+    $sumMod += (int)(substr($value,2,1)) * 7 % 10;
+    $sumMod += (int)(substr($value,3,1)) * 1 % 10;
+    $sumMod += (int)(substr($value,4,1)) * 3 % 10;
+    $sumMod += (int)(substr($value,5,1)) * 7 % 10;
+    $sumMod += (int)(substr($value,6,1)) * 1 % 10;
+    $sumMod += (int)(substr($value,7,1)) * 3 % 10;
+    $sumMod += floor((int)(substr($value,8,1)) * 5 / 10);
+    $sumMod += (int)(substr($value,8,1)) * 5 % 10;
+    $sumMod += (int)(substr($value,9,1));
+
+    if( $sumMod%10!=0 ){
+        return FALSE;
+    }
+
+    return TRUE;
+
+});
