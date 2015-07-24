@@ -80,8 +80,6 @@ class framework
         $module          = $this->getRouter()->getParameter("module");
         $controller      = $this->getRouter()->getParameter("controller");
         $action          = $this->getRouter()->getParameter("action");
-        $basedir         = $this->getRouter()->getParameter("basedir");
-        $prefix          = $this->getRouter()->getParameter("prefix");
 
         $namespaceName   = $this->getRouter()->getControllerNamespace();
         foreach($this->getRouter()->getParameters()as $key => $parameter)
@@ -92,14 +90,6 @@ class framework
         $className       = $controller.$this->getRouter()->getControllerSuffix();
         $actionName      = $action.$this->getRouter()->getActionSuffix();
 
-        $baseFolderName  = $this->getRouter()->getControllerDir();
-        foreach($this->getRouter()->getParameters()as $key => $parameter)
-        {
-            $baseFolderName = str_replace('<'.$key.'>', $parameter, $baseFolderName);
-        }
-
-        $fileName        = $baseFolderName."/".$className.".php";
-        $folderName      = dirname($fileName);
         $callClassName   = $namespaceName."\\".$className;
 
         if(!$arguments)
@@ -109,22 +99,13 @@ class framework
 
         $requireInfo     = [
             'namespace'         => $namespaceName
-            , 'folder'          => $folderName
-            , 'file'            => $fileName
             , 'class'           => $className
             , 'method'          => $actionName
         ];
 
-        $fileName        = stream_resolve_include_path($fileName);
-        if (TRUE === file_exists($fileName) && TRUE === is_readable($fileName))
         {
 
-            if (FALSE === in_array($fileName, get_included_files()))
-            {
-                require $fileName;
-            }
-
-            if (FALSE === class_exists($callClassName, FALSE))
+            if (FALSE === class_exists($callClassName))
             {
                 return $this->forwardNotFound($this->getRouter()->getNotFound(), ["CLASS_DOES_NOT_EXISTS", self::CLASS_DOES_NOT_EXISTS, $requireInfo]);
             }
@@ -155,18 +136,6 @@ class framework
             }
             return $this->forwardNotFound($this->getRouter()->getNotFound(), ["METHOD_DOES_NOT_EXISTS", self::METHOD_DOES_NOT_EXISTS, $requireInfo]);
 
-        }
-        else
-        {
-            $folderName = stream_resolve_include_path($folderName);
-            if(FALSE === is_dir($folderName))
-            {
-                return $this->forwardNotFound($this->getRouter()->getNotFound(), ["FOLDER_DOES_NOT_EXISTS", self::FOLDER_DOES_NOT_EXISTS, $requireInfo]);
-            }
-            else
-            {
-                return $this->forwardNotFound($this->getRouter()->getNotFound(), ["FILE_DOES_NOT_EXISTS", self::FILE_DOES_NOT_EXISTS, $requireInfo]);
-            }
         }
 
     }
