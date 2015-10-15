@@ -1,6 +1,6 @@
 <?php
 
-namespace limepie\db;
+namespace limepie\db\mysql;
 
 class connect extends \Pdo
 {
@@ -8,7 +8,7 @@ class connect extends \Pdo
     public function __construct($name)
     {
 
-        $connect = \limepie\config::get("db-server", $name);
+        $connect = \limepie\config::get("mysql-server", $name);
 
         if (TRUE === isset($connect["dsn"])
             && TRUE === isset($connect["username"])
@@ -19,7 +19,7 @@ class connect extends \Pdo
         }
         else
         {
-            throw new \limepie\db\exception($name . " config를 확인하세요.");
+            throw new \limepie\db\mysql\exception("mysql ". $name . " config를 확인하세요.");
         }
 
     }
@@ -71,7 +71,7 @@ class connect extends \Pdo
         }
         catch (\PDOException $e)
         {
-            throw new \limepie\db\exception($e);
+            throw new \limepie\db\mysql\exception($e);
         }
 
     }
@@ -92,7 +92,7 @@ class connect extends \Pdo
         }
         catch (\PDOException $e)
         {
-            throw new \limepie\db\exception($e);
+            throw new \limepie\db\mysql\exception($e);
         }
 
     }
@@ -123,7 +123,7 @@ class connect extends \Pdo
         }
         catch (\PDOException $e)
         {
-            throw new \limepie\db\exception($e);
+            throw new \limepie\db\mysql\exception($e);
         }
 
     }
@@ -137,7 +137,7 @@ class connect extends \Pdo
         }
         catch (\PDOException $e)
         {
-            throw new \limepie\db\exception($e);
+            throw new \limepie\db\mysql\exception($e);
         }
 
     }
@@ -154,6 +154,117 @@ class connect extends \Pdo
         }
         return FALSE;
 
+    }
+
+    private function isMultipleRow($data)
+    {
+        $dataArrayCount = array_reduce($data, function($arrayCount, $d){
+            return is_array($d) ? $arrayCount + 1 : $arrayCount;
+        }, 0);
+        switch ($dataArrayCount) {
+            case 0:
+                return FALSE;
+            case count($data):
+                return TRUE;
+            default:
+                throw new \PDOException('upsert data error!');
+        }
+    }
+
+    private function buildUpsertFields($field, &$fields, &$updateFields)
+    {
+        array_push($fields, $field);
+        array_push($updateFields, $field.' = VALUES('.$field.')');
+    }
+
+    private function buildUpsertInsertValue($bindKey, $value, &$insertValues, &$bind)
+    {
+        array_push($insertValues, $bindKey);
+        $bind[$bindKey] = $value;
+    }
+
+    private function buildUpsertQueryData($data)
+    {
+        $isMultipleRow = self::isMultipleRow($data);
+
+        $fields       = [];
+        $insertValues = [[]];
+        $updateFields = [];
+        $bind         = [];
+
+        $insertValuesKey = 0;
+        foreach ($data as $key => $value) {
+            if ($isMultipleRow === TRUE) {
+                if ($key === 0) {
+                    foreach ($value as $field) {
+                        self::buildUpsertFields($field, $fields, $updateFields);
+                    }
+                } else {
+                    $insertValues[$insertValuesKey] = [];
+                    foreach ($value as $fieldKey => $val) {
+                        $bindKey = ':'.$fields[$fieldKey].$key;
+                        self::buildUpsertInsertValue($bindKey, $val, $insertValues[$insertValuesKey], $bind);
+                    }
+                    $insertValuesKey++;
+                }
+            } else {
+                self::buildUpsertFields($key, $fields, $updateFields);
+
+                $bindKey = ':'.$key;
+                self::buildUpsertInsertValue($bindKey, $value, $insertValues[$insertValuesKey], $bind);
+            }
+        }
+        return [
+            'fields'        => $fields,
+            'insertValues'  => $insertValues,
+            'updateFields'  => $updateFields,
+            'bind'          => $bind,
+            'isMultipleRow' => $isMultipleRow
+        ];
+    }
+
+    public function upsert($table, $data, $options=[])
+    {
+        $queryData = self::buildUpsertQueryData($data);
+
+        $fields       = implode(',', $queryData['fields']);
+        $insertValues = implode(",\n\t", array_map(function($d){ return '( '.implode(',', $d).' )';}, $queryData['insertValues']));
+        $updateFields = implode(",\n\t", $queryData['updateFields']);
+        $query = <<<SQL
+
+INSERT INTO $table
+    ( $fields )
+VALUES
+    $insertValues
+
+SQL;
+        if (isset($options['insertOnly'])===FALSE || !$options['insertOnly']) {
+            $query .= <<<SQL
+
+ON DUPLICATE KEY UPDATE
+    id=LAST_INSERT_ID(id),
+    $updateFields
+
+SQL;
+        }
+        if ($queryData['isMultipleRow']) {
+            return self::set($query, $queryData['bind']);
+        } else {
+            return self::setId($query, $queryData['bind']);
+        }
+    }
+
+    public function delById($table, $id)
+    {
+
+        $bind = [
+            ':id' => $id
+        ];
+        $query = '
+            DELETE FROM '.$table.'
+            WHERE id = :id
+        ';
+        return self::set($query, $bind);
     }
 
     public function insertId($name = NULL)
@@ -183,7 +294,7 @@ class connect extends \Pdo
         }
         catch (\PDOException $e)
         {
-            throw new \limepie\db\exception($e);
+            throw new \limepie\db\mysql\exception($e);
         }
 
     }
@@ -197,7 +308,7 @@ class connect extends \Pdo
         }
         catch (\PDOException $e)
         {
-            throw new \limepie\db\exception($e);
+            throw new \limepie\db\mysql\exception($e);
         }
 
     }
@@ -211,7 +322,7 @@ class connect extends \Pdo
         }
         catch (\PDOException $e)
         {
-            throw new \limepie\db\exception($e);
+            throw new \limepie\db\mysql\exception($e);
         }
 
     }

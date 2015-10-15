@@ -1,7 +1,7 @@
 <?php
 
 
-namespace limepie\db;
+namespace limepie\db\mysql;
 
 class exception extends \PDOException
 {

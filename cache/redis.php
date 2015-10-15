@@ -4,40 +4,33 @@ namespace limepie\cache;
 
 class redis
 {
+    private static $instance;
 
-    public static function get($options = [])
+    private function __construct(){}
+
+    private static function getInstance($conn)
     {
-
-        if (!isset($options["expire"]))
+        if (FALSE === isset(self::$instance[$conn]))
         {
-            $options["expire"] = 3600;
-        }
-        if (!isset($options["server"]))
-        {
-            throw new \limepie\cache\Exception("server not found");
-        }
-        if (!isset($options["key"]))
-        {
-            throw new \limepie\cache\Exception("key not found");
-        }
-        if (!isset($options["value"]) || gettype($options["value"]) != "object")
-        {
-            throw new \limepie\cache\Exception("callback function not found");
+            self::$instance[$conn] = new \limepie\cache\redis\connect($conn);
         }
 
-        $definition = $options["value"];
+        return self::$instance[$conn];
+    }
 
-        if ((gettype($definition) == "object") && ($definition instanceof \Closure))
-        {
-            $data = $definition();
-        }
-        else
-        {
-            $data = $definition;
-        }
+    public static function driver($driver = 'master')
+    {
+        return self::getInstance($driver);
+    }
 
-        return $data;
+    public static function set($driver = 'master', $key, $value, $expire = 3600)
+    {
+        return self::getInstance($driver)->set($key,$value, $expire);
+    }
 
+    public static function get($driver = 'master', $key)
+    {
+        return self::getInstance($driver)->get($key);
     }
 
 }
